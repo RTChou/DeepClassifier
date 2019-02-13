@@ -10,8 +10,8 @@ Graph based semi-supervised learning with convolution neural network
 """
 def GraphSemiCNN(trainX, trainY):
 
-    input_row = trainX.shape[2]
-    input_col = trainX.shape[3]
+    input_row = trainX.shape[2] # genes
+    input_col = trainX.shape[3] # samples
 
     filters = 1000 # N filters
     kernal_size = 10 # a window of size k
