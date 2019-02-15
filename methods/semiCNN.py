@@ -2,11 +2,13 @@ import keras.layers.core as core
 import keras.layers.convolutional as conv
 import keras.layers.pooling as pool
 from keras.layers import Input, Activation, Flatten, Dense, Concatenate
+from keras.models import Model
+from keras.optimizers import SGD # stochastic gradient descent
 
 """
 Graph based semi-supervised learning with convolution neural network
 """
-def GraphSemiCNN(trainX, trainY, nb_classes):
+def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
 
     # initialization
     input_samples = trainX.shape[0]
@@ -23,8 +25,9 @@ def GraphSemiCNN(trainX, trainY, nb_classes):
     units4 = 5500
     nb_classes = nb_classes # number of tissue types
     nb_nodes = input_row # number of input samples
-    optimization='sgd' # stochastic gradient descent
-    
+    INIT_LR = 0.01 # initial learning rate
+    EPOCHS = 75 # number of epochs
+
     input = Input(shape=(input_genes,))
     feature = conv.Conv1D(filters, kernal_size, init='he_normal', W_regularizer= l1(L1CNN), border_mode='same')(input)
     # initializer, regularizer, other params for conv
@@ -43,6 +46,14 @@ def GraphSemiCNN(trainX, trainY, nb_classes):
     output2 = Dense(nb_nodes, activation='softmax')(hidden3)
 
     cnn = Model(input, [output1, output2])
-    cnn.compile(loss='categorical_crossentropy', optimizer=optimization, metrics=['accuracy']) # configure before training
-    # loss function: cross entropy
+    
+    print('[INFO] training network...')
+    opt = SGD(lr=INIT_LR)
+    cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
+    
+    # train the model
+    if predict is False:
+        H = cnn.fit(trainX, trainY, validation_data=(testX, testY), epochs=EPOCHS, batch_size=64)
+
+    return cnn
 

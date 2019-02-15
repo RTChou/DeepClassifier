@@ -5,9 +5,6 @@ from sklearn.preprocessing import LabelBinarizer
 from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 # from sklearn.metrics import classification_report
-# from keras.models import Sequential
-# from keras.layers.core import Dense
-# from keras.optimizers import SGD
 # from imutils import paths
 # import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,6 +14,8 @@ import random
 # import pickle
 # import cv2 # not being used
 # import os
+from methods.semiCNN import GraphSemiCNN
+import keras.models as models
 
 def main():
     parser = argparse.ArgumentParser(description="This script is for training the semi-supervised neural network model")
@@ -54,9 +53,8 @@ def main():
     testY = lb.transform(testY)
     nb_classes = len(lb.classes_)
 
-
-
-    models=GraphSemiCNN()
+    # initialize the model
+    models = GraphSemiCNN(trainX, trainY, nb_classes)
 
 if __name__ == "__main__":
     main()
