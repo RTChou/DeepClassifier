@@ -2,6 +2,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 from sklearn.preprocessing import LabelBinarizer
+from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from keras.models import Sequential
@@ -37,6 +38,10 @@ def main():
     for i in range(0, trainX.shape[1]):
        data.append(trainX.iloc[:,i].values)
        labels.append(trainY.loc[[trainX.columns[i]]]['tissue'].item())
+    
+    data = scale(np.array(data, dtype='float'), axis=1)
+    labels = np.array(labels)
+    
 
     models=GraphSemiCNN()
 
