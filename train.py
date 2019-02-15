@@ -30,10 +30,11 @@ def main():
     data = []
     labels = []
 
-    # load data and shuffle the samples
+    # load data, shuffle the samples, and scale data
     exp_dst = pd.read_csv(args.exp, sep='\t', index_col=0)
     label_dst = pd.read_csv(args.label, sep='\t', index_col=0)
     exp_dst = exp_dst.sample(frac=1, random_state=33, axis=1)
+    exp_dst = pd.DataFrame(scale(exp_dst), index=exp_dst.index, columns=exp_dst.columns)
 
     # store data in list
     for i in range(0, exp_dst.shape[1]):
@@ -42,8 +43,7 @@ def main():
        data.append(np.split(exp, len(exp)))
        labels.append(np.array(label))
     
-    # scale data
-    data = scale(np.array(data, dtype='float'), axis=1)
+    data = np.array(data)
     labels = np.array(labels)
     
     # split the data into training and test sets
