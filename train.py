@@ -37,8 +37,10 @@ def main():
 
     # store data in list
     for i in range(0, exp_dst.shape[1]):
-       data.append(exp_dst.iloc[:,i].values)
-       labels.append(label_dst.loc[[exp_dst.columns[i]]]['tissue'].item())
+       exp = exp_dst.iloc[:,i].values
+       label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
+       data.append(np.split(exp, len(exp)))
+       labels.append(np.array(label))
     
     # scale data
     data = scale(np.array(data, dtype='float'), axis=1)

@@ -13,8 +13,9 @@ def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
     # initialization
     input_samples = trainX.shape[0]
     input_genes = trainX.shape[1]
+    steps = 1
     filters = 1000 # N filters
-    kernal_size = 10 # a window of size k
+    kernel_size = 10 # a window of size k
     L1CNN = 0
     # dropout = 0.75 # parm for preventing overfitting
     actfun = 'relu'
@@ -28,8 +29,8 @@ def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
     INIT_LR = 0.01 # initial learning rate
     EPOCHS = 75 # number of epochs
 
-    input = Input(shape=(input_genes,))
-    feature = conv.Conv1D(filters, kernal_size, init='he_normal', W_regularizer= reg.l1(L1CNN), border_mode='same')(input)
+    input = Input(shape=(input_samples, steps, input_genes))
+    feature = conv.Conv1D(filters, kernel_size, padding='same', kernel_initializer='he_normal', kernel_regularizer=reg.l1(L1CNN))(input)
     # initializer, regularizer, other params for conv
     # feature = Dropout(dropout)(feature)
     feature = Activation(actfun)(feature)
