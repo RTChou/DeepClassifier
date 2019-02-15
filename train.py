@@ -20,13 +20,18 @@ import os
 def main():
     parser = argparse.ArgumentParser(description="This script is for training the semi-supervised neural network model")
     parser.add_argument('-i', '--input', required=True, help='path to input gene expression data, with genes in rows and samples in columns')
+    parser.add_argument('-l', '--label', required=True, help='path to input labels')
     parser.add_argument('-m', '--model', required=True, help='path to output trained model')
-    parser.add_argument('-l', '--label-bin', required=True, help='path to output label binarizer')
+    parser.add_argument('-b', '--label-bin', required=True, help='path to output label binarizer')
     parser.add_argement('-p', '--plot', required=True, help='path to output accuracy/loss plot')
     args = parser.parse_args()
 
-    trainX = pd.read_csv(args.trainX, sep='\t', index_col=0)
-    trainY = pd.read_csv(args.trainY, sep='\t')
+    print('[INFO] loading training data...')
+    data = []
+    labels = []
+
+    trainX = pd.read_csv(args.input, sep='\t', index_col=0)
+    trainY = pd.read_csv(args.label, sep='\t', index_col=0)
 
     models=GraphSemiCNN()
 
