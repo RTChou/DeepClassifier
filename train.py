@@ -14,7 +14,7 @@ import numpy as np
 import argparse
 import random
 import pickle
-import cv2
+import cv2 # not being used
 import os
 
 def main():
@@ -32,6 +32,10 @@ def main():
 
     trainX = pd.read_csv(args.input, sep='\t', index_col=0)
     trainY = pd.read_csv(args.label, sep='\t', index_col=0)
+    trainX = trainX.sample(frac=1, random_state=33, axis=1)
+
+    for i in range(0, trainX.shape[1]):
+        
 
     models=GraphSemiCNN()
 
