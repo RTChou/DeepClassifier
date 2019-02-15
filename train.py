@@ -35,7 +35,8 @@ def main():
     trainX = trainX.sample(frac=1, random_state=33, axis=1)
 
     for i in range(0, trainX.shape[1]):
-        
+       data.append(trainX.iloc[:,i].values)
+       labels.append(trainY.loc[[trainX.columns[i]]]['tissue'].item())
 
     models=GraphSemiCNN()
 
