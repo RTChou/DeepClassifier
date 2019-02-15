@@ -52,6 +52,8 @@ def main():
     lb = LabelBinarizer()
     trainY = lb.fit_transform(trainY)
     testY = lb.transform(testY)
+    nb_classes = len(lb.classes_)
+
 
 
     models=GraphSemiCNN()
