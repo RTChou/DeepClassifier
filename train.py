@@ -54,7 +54,7 @@ def main():
     nb_classes = len(lb.classes_)
 
     # initialize the model
-    models = GraphSemiCNN(trainX, trainY, nb_classes)
+    models = GraphSemiCNN(trainX, trainY, testX, testY, nb_classes)
 
 if __name__ == "__main__":
     main()
