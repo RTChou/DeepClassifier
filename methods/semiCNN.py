@@ -13,7 +13,6 @@ def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
     # initialization
     input_samples = trainX.shape[0]
     input_genes = trainX.shape[1]
-    steps = 1
     filters = 1000 # N filters
     kernel_size = 10 # a window of size k
     L1CNN = 0
@@ -29,8 +28,8 @@ def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
     INIT_LR = 0.01 # initial learning rate
     EPOCHS = 75 # number of epochs
 
-    input = Input(shape=(steps, input_genes))
-    feature = conv.Conv1D(filters, kernel_size, padding='same', kernel_initializer='he_normal', kernel_regularizer=reg.l1(L1CNN))(input)
+    input_data = Input(shape=(input_genes, 1))
+    feature = conv.Conv1D(filters, kernel_size, padding='same', kernel_initializer='he_normal', kernel_regularizer=reg.l1(L1CNN))(input_data)
     # initializer, regularizer, other params for conv
     # feature = Dropout(dropout)(feature)
     feature = Activation(actfun)(feature)
@@ -46,8 +45,9 @@ def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
     output1 = Dense(nb_classes, activation='softmax')(concatenated)
     output2 = Dense(nb_nodes, activation='softmax')(hidden3)
 
-    cnn = Model(input, [output1, output2])
-    
+    # cnn = Model(input_data, [output1, output2])
+    cnn = Model(input_data, output1)
+
     print('[INFO] training network...')
     opt = SGD(lr=INIT_LR)
     cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
