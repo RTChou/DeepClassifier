@@ -8,13 +8,15 @@ from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 from methods.semiCNN import GraphSemiCNN
+from scipy.spatial import distance_matrix
+
 # from sklearn.metrics import classification_report
 # from imutils import paths
 # import matplotlib.pyplot as plt
 # import pickle
 # import cv2 # not being used
 # import os
-import keras.models as models
+# import keras.models as models
 
 def main():
     parser = argparse.ArgumentParser(description="This script is for training the semi-supervised neural network model")
