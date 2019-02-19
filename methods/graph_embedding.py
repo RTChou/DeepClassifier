@@ -2,12 +2,6 @@ from keras import backend as K
 from keras.engine.topology import Layer
 
 
-def constructGraph():
-    """
-    k-nearest neighbor approach?
-    build a Kernel
-    """
-
 def deepWalk(graph, w, d, gamma, t):
     """
     w: window size

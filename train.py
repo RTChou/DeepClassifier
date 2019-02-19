@@ -29,8 +29,9 @@ def main():
 
     print('[INFO] loading training data...')
     data = []
+    data_t = [] # training data
     labels = []
-
+    
     # load data, shuffle the samples, and scale data
     exp_dst = pd.read_csv(args.exp, sep='\t', index_col=0)
     label_dst = pd.read_csv(args.label, sep='\t', index_col=0)
@@ -41,12 +42,14 @@ def main():
 
     # store data in list
     for i in range(0, exp_dst.shape[1]):
-       exp = exp_dst.iloc[:,i].values
+       exp = list(exp_dst.iloc[:,i].values)
        label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
-       data.append([[i] for i in list(exp)])
+       data.append(exp)
+       data_t.append([[i] for i in exp])
        labels.append([label])
     
-    data = np.array(data)
+    graph = distance_matrix(data)
+    data_t = np.array(data)
     labels = np.array(labels)
     
     # split the data into training and test sets
@@ -59,7 +62,7 @@ def main():
     nb_classes = len(lb.classes_)
 
     # initialize the model
-    models = GraphSemiCNN(trainX, trainY, testX, testY, nb_classes)
+    models = GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, graph)
 
 if __name__ == "__main__":
     main()

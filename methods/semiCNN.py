@@ -8,7 +8,7 @@ from keras.optimizers import SGD # stochastic gradient descent
 """
 Graph based semi-supervised learning with convolution neural network
 """
-def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
+def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, graph, predict=False):
 
     # initialization
     input_samples = trainX.shape[0]
@@ -52,7 +52,7 @@ def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, predict=False):
     opt = SGD(lr=INIT_LR)
     cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
     
-    # train the model
+    # train the model # move to train.py?
     if predict is False:
         H = cnn.fit(trainX, trainY, validation_data=(testX, testY), epochs=EPOCHS, batch_size=64)
 
