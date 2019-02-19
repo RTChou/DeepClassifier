@@ -43,12 +43,12 @@ def sampleContextDist(graph, labels, r1, r2, q, d):
     return((i, c, gamma))
 
 
-class Embedding(Layer):
+class GraphEmbedding(Layer):
     
     def __init__(self, output_dim, graph, **kwargs):
         self.output_dim = output_dim
         self.graph = graph
-        super(MyLayer, self).__init__(**kwargs)
+        super(GraphEmbedding, self).__init__(**kwargs)
 
     def build(self, input_shape):
         """

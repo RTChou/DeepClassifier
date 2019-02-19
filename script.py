@@ -13,7 +13,7 @@ from scipy.spatial import distance_matrix
 # import pickle
 # import cv2 # not being used
 # import os
-import keras.models as models
+# import keras.models as models
 
 data = []
 data_t = [] # training data
@@ -35,8 +35,8 @@ for i in range(0, exp_dst.shape[1]):
     data_t.append([[i] for i in exp])
     labels.append([label])
 
-graph = distance_matrix(data)
-data_t = np.array(data)
+graph = distance_matrix(data, data)
+data_t = np.array(data_t)
 labels = np.array(labels)
 
 # split the data into training and test sets

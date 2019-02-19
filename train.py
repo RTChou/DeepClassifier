@@ -48,10 +48,10 @@ def main():
        data_t.append([[i] for i in exp])
        labels.append([label])
     
-    graph = distance_matrix(data)
-    data_t = np.array(data)
+    graph = distance_matrix(data, data)
+    data_t = np.array(data_t)
     labels = np.array(labels)
-    
+
     # split the data into training and test sets
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
 
