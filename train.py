@@ -1,20 +1,19 @@
 # import matplotlib
 # matplotlib.use('Agg')
 
-from sklearn.preprocessing import LabelBinarizer
+import argparse
+import pandas as pd
+import numpy as np
 from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelBinarizer
+from methods.semiCNN import GraphSemiCNN
 # from sklearn.metrics import classification_report
 # from imutils import paths
 # import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-import argparse
-import random
 # import pickle
 # import cv2 # not being used
 # import os
-from methods.semiCNN import GraphSemiCNN
 import keras.models as models
 
 def main():
@@ -33,15 +32,17 @@ def main():
     # load data, shuffle the samples, and scale data
     exp_dst = pd.read_csv(args.exp, sep='\t', index_col=0)
     label_dst = pd.read_csv(args.label, sep='\t', index_col=0)
+    
     exp_dst = exp_dst.sample(frac=1, random_state=33, axis=1)
     exp_dst = pd.DataFrame(scale(exp_dst), index=exp_dst.index, columns=exp_dst.columns)
+    label_dst = label_dst.replace(np.nan, '', regex=True)
 
     # store data in list
     for i in range(0, exp_dst.shape[1]):
        exp = exp_dst.iloc[:,i].values
        label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
-       data.append(np.split(exp, len(exp)))
-       labels.append(np.array(label))
+       data.append([[i] for i in list(exp)])
+       labels.append(label)
     
     data = np.array(data)
     labels = np.array(labels)
