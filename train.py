@@ -42,7 +42,7 @@ def main():
        exp = exp_dst.iloc[:,i].values
        label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
        data.append([[i] for i in list(exp)])
-       labels.append(label)
+       labels.append([label])
     
     data = np.array(data)
     labels = np.array(labels)
