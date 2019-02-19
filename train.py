@@ -28,8 +28,7 @@ def main():
     args = parser.parse_args()
 
     print('[INFO] loading training data...')
-    data = []
-    data_t = [] # training data
+    data = [] # training data
     labels = []
     
     # load data, shuffle the samples, and scale data
@@ -44,16 +43,16 @@ def main():
     for i in range(0, exp_dst.shape[1]):
        exp = list(exp_dst.iloc[:,i].values)
        label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
-       data.append(exp)
-       data_t.append([[i] for i in exp])
+       data.append([[i] for i in exp])
        labels.append([label])
     
-    graph = distance_matrix(data, data)
-    data_t = np.array(data_t)
+    data = np.array(data)
     labels = np.array(labels)
 
     # split the data into training and test sets
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
+    # convert trainX to graph embedding
+
 
     # one-hot encoding
     lb = LabelBinarizer()

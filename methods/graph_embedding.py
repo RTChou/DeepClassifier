@@ -54,8 +54,11 @@ class GraphEmbedding(Layer):
         """
         this function defines weights
         """
-
-
+        self.kernel = self.add_weight(name='kernel',
+                                      shape=(input_shape[1], self.output_dim),
+                                      initializer='uniform',
+                                      trainable=True)
+        super(GraphEmbedding, self).build(input_shape)
 
     def call(self, x):
         """

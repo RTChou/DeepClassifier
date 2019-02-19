@@ -16,7 +16,6 @@ from scipy.spatial import distance_matrix
 # import keras.models as models
 
 data = []
-data_t = [] # training data
 labels = []
 
 # load data, shuffle the samples, and scale data
@@ -31,12 +30,10 @@ label_dst = label_dst.replace(np.nan, '', regex=True)
 for i in range(0, exp_dst.shape[1]):
     exp = list(exp_dst.iloc[:,i].values)
     label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
-    data.append(exp)
-    data_t.append([[i] for i in exp])
+    data.append([[i] for i in exp])
     labels.append([label])
 
-graph = distance_matrix(data, data)
-data_t = np.array(data_t)
+data = np.array(data)
 labels = np.array(labels)
 
 # split the data into training and test sets
