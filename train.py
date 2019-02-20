@@ -52,7 +52,13 @@ def main():
     # split the data into training and test sets
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
     # convert trainX to graph embedding
-
+    flat_list = []
+    for i in range(0, trainX.shape[0]):
+        sample = []
+        for j in range(0, trainX.shape[1]):
+            sample.append(trainX[i,j].item())
+        flat_list.append(sample)
+    graph = distance_matrix(flat_list, flat_list)
 
     # one-hot encoding
     lb = LabelBinarizer()
