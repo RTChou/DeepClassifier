@@ -8,6 +8,7 @@ from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 from methods.semiCNN import GraphSemiCNN
+from sklearn.neighbors import NearestNeighbors
 from scipy.spatial import distance_matrix
 
 # from sklearn.metrics import classification_report
@@ -58,6 +59,10 @@ def main():
         for j in range(0, trainX.shape[1]):
             sample.append(trainX[i,j].item())
         flat_list.append(sample)
+    
+    nbrs = NearestNeighbors(n_neighbors=1000, algorithm='ball_tree').fit(flat_list)
+    graph = nbrs.kneighbors_graph(flat_list).toarray()
+
     graph = distance_matrix(flat_list, flat_list)
 
     # one-hot encoding
