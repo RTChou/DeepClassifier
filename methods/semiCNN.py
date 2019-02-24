@@ -45,11 +45,11 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     hidden2 = Dense(units2, activation='relu')(hidden1_1) # z1 -> z2
     hidden4 = Dense(units4, activation='relu')(target) # z3 -> z4
     concatenated = Concatenate(axis=0)([hidden2, hidden4]) # concatenate z2, z4
-    
+
     similarity = merge([target, context], mode='cos', dot_axes=0)
     dot_product = merge([target, context], mode='dot', dot_axes=1)
     dot_product = Reshape((1,))(dot_product)
-
+    
     output1 = Dense(nb_classes, activation='softmax')(concatenated)
     output2 = Dense(1, activation='softmax')(dot_product) # sigmoid
 
