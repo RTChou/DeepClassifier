@@ -7,9 +7,8 @@ import numpy as np
 from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
-from methods.semiCNN import GraphSemiCNN
 from sklearn.neighbors import NearestNeighbors
-from scipy.spatial import distance_matrix
+from methods.semiCNN import build_model
 
 # from sklearn.metrics import classification_report
 # from imutils import paths
@@ -41,7 +40,7 @@ def main():
     label_dst = label_dst.replace(np.nan, '', regex=True)
 
     # store data in list
-    for i in range(0, exp_dst.shape[1]):
+    for i in range(exp_dst.shape[1]):
        exp = list(exp_dst.iloc[:,i].values)
        label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
        data.append([[i] for i in exp])
@@ -52,18 +51,18 @@ def main():
 
     # split the data into training and test sets
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
+    
     # convert trainX to graph embedding
     flat_list = []
-    for i in range(0, trainX.shape[0]):
+    for i in range(trainX.shape[0]):
         sample = []
-        for j in range(0, trainX.shape[1]):
+        for j in range(trainX.shape[1]):
             sample.append(trainX[i,j].item())
         flat_list.append(sample)
     
     nbrs = NearestNeighbors(n_neighbors=1000, algorithm='ball_tree').fit(flat_list)
-    graph = nbrs.kneighbors_graph(flat_list).toarray()
-
-    graph = distance_matrix(flat_list, flat_list)
+    graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
+    labels_t = trainY
 
     # one-hot encoding
     lb = LabelBinarizer()
@@ -72,7 +71,7 @@ def main():
     nb_classes = len(lb.classes_)
 
     # initialize the model
-    models = GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, graph)
+    models = build_model(trainX, trainY, testX, testY, nb_classes)
 
 if __name__ == "__main__":
     main()
