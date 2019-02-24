@@ -51,7 +51,7 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     dot_product = Reshape((1,))(dot_product)
 
     output1 = Dense(nb_classes, activation='softmax')(concatenated)
-    output2 = Dense(1, activation='softmax')(dot_product)
+    output2 = Dense(1, activation='softmax')(dot_product) # sigmoid
 
     cnn = Model([input1, input2], [output1, output2])
 
