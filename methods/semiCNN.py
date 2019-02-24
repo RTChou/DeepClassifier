@@ -1,60 +1,62 @@
 import keras.layers.convolutional as conv
 import keras.layers.pooling as pool
 import keras.regularizers as reg
-from keras.layers import Input, Activation, Flatten, Dense, Concatenate
+from keras.layers import Input, Activation, Flatten, Dense, Concatenate, Reshape
 from keras.models import Model
 from keras.optimizers import SGD # stochastic gradient descent
 
 """
-Graph based semi-supervised learning with convolution neural network
+Semi-supervised learning with convolution neural network
 """
-def GraphSemiCNN(trainX, trainY, testX, testY, nb_classes, graph, predict=False):
+def build_model(trainX, trainY, testX, testY, nb_classes):
 
     # initialization
     input_samples = trainX.shape[0]
     input_genes = trainX.shape[1]
-    filters = 1000 # N filters
-    kernel_size = 10 # a window of size k
+    filters = 1000
+    kernel_size = 10
     L1CNN = 0
     # dropout = 0.75 # parm for preventing overfitting
     actfun = 'relu'
-    pool_size = 11 # a window of p features
-    units1 = 11000 # number of nodes in hidden layer
+    pool_size = 11 # window of eatures
+    units1 = 11000 # numberof nodes in hidden layer
     units2 = 5500
     units3 = 5500
     units4 = 5500
-    nb_classes = nb_classes # number of tissue types
-    nb_nodes = input_samples # number of input samples
     INIT_LR = 0.01 # initial learning rate
-    EPOCHS = 75 # number of epochs
+    EPOCHS = 75
 
-    input_data = Input(shape=(input_genes, 1))
-    feature = conv.Conv1D(filters, kernel_size, padding='same', kernel_initializer='he_normal', kernel_regularizer=reg.l1(L1CNN))(input_data)
-    # initializer, regularizer, other params for conv
-    # feature = Dropout(dropout)(feature)
-    feature = Activation(actfun)(feature)
-    feature = pool.MaxPooling1D(pool_size)(feature)
-    feature = Flatten()(feature)
+    input1 = Input(shape=(input_genes, 1))
+    feature1 = conv.Conv1D(filters, kernel_size, padding='same', kernel_initializer='he_normal', kernel_regularizer=reg.l1(L1CNN))(input1)
+    feature1 = Activation(actfun)(feature1)
+    feature1 = pool.MaxPooling1D(pool_size)(feature1)
+    feature1 = Flatten()(feature1)
+
+    input2 = Input(shape=(input_genes, 1))
+    feature2 = conv.Conv1D(filters, kernel_size, padding='same', kernel_initializer='he_normal', kernel_regularizer=reg.l1(L1CNN))(input2)
+    feature2 = Activation(actfun)(feature2)
+    feature2 = pool.MaxPooling1D(pool_size)(feature2)
+    feature2 = Flatten()(feature2)
     
-    hidden1 = Dense(units1, activation='relu')(feature)
-    hidden2 = Dense(units2, activation='relu')(hidden1) # z1 -> z2
-    hidden3 = Dense(units3, activation='relu')(hidden1) # z1 -> z3
-    hidden4 = Dense(units4, activation='relu')(hidden3) # z3 -> z4
+    hidden1_1 = Dense(units1, activation='relu')(feature1)
+    target = Dense(units3, activation='relu')(hidden1_1) # z1 -> z3
+    hidden1_2 = Dense(units1, activation='relu')(feature2)
+    context = Dense(units3, activation='relu')(hidden1_2)
+    hidden2 = Dense(units2, activation='relu')(hidden1_1) # z1 -> z2
+    hidden4 = Dense(units4, activation='relu')(target) # z3 -> z4
     concatenated = Concatenate(axis=0)([hidden2, hidden4]) # concatenate z2, z4
     
+    similarity = merge([target, context], mode='cos', dot_axes=0)
+    dot_product = merge([target, context], mode='dot', dot_axes=1)
+    dot_product = Reshape((1,))(dot_product)
+
     output1 = Dense(nb_classes, activation='softmax')(concatenated)
-    output2 = Dense(nb_nodes, activation='softmax')(hidden3)
+    output2 = Dense(1, activation='softmax')(dot_product)
 
-    # cnn = Model(input_data, [output1, output2])
-    cnn = Model(input_data, output1)
+    cnn = Model([input1, input2], [output1, output2])
 
-    print('[INFO] training network...')
     opt = SGD(lr=INIT_LR)
     cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
     
-    # train the model # move to train.py?
-    if predict is False:
-        H = cnn.fit(trainX, trainY, validation_data=(testX, testY), epochs=EPOCHS, batch_size=64)
-
     return cnn
 
