@@ -24,7 +24,8 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     units3 = 5500
     units4 = 5500
     INIT_LR = 0.01 # initial learning rate
-    EPOCHS = 75
+    # EPOCHS = 75
+    lamd = 1.0
 
     input1 = Input(shape=(input_genes, 1))
     feature1 = conv.Conv1D(filters, kernel_size, padding='same', kernel_initializer='he_normal', kernel_regularizer=reg.l1(L1CNN))(input1)
@@ -51,12 +52,18 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     dot_product = Reshape((1,))(dot_product)
     
     output1 = Dense(nb_classes, activation='softmax')(concatenated)
-    output2 = Dense(1, activation='softmax')(dot_product) # sigmoid
+    output2 = Dense(1, activation='sigmoid')(dot_product) # softmax?
 
-    cnn = Model([input1, input2], [output1, output2])
+    cnn = Model(inputs=[input1, input2], outputs=[output1, output2], name='graphSemiCNN')
 
+    losses = {
+        'output1': 'categorical_crossentropy',
+        'output2': 'binary_crossentropy',
+    }
+    lossWeights = {'output1': 1.0, 'output2': lambd}  
     opt = SGD(lr=INIT_LR)
-    cnn.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
+    
+    cnn.compile(loss=losses, optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
     
     return cnn
 
