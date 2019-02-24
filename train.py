@@ -8,7 +8,7 @@ from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.neighbors import NearestNeighbors
-from methods.semiCNN import build_model
+from methods.graphSemiCNN import build_model
 
 # from sklearn.metrics import classification_report
 # from imutils import paths
