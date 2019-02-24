@@ -12,8 +12,8 @@ data = [] # training data
 labels = []
 
 # load data, shuffle the samples, and scale data
-exp_dst = pd.read_csv(args.exp, sep='\t', index_col=0)
-label_dst = pd.read_csv(args.label, sep='\t', index_col=0)
+exp_dst = pd.read_csv('~/Downloads/imputation/rnaseq_data_tpm_from_metadata.tsv', sep='\t', index_col=0)
+label_dst = pd.read_csv('~/Downloads/imputation/rnaseq_label_from_metadata.tsv', sep='\t', index_col=0)
 
 exp_dst = exp_dst.sample(frac=1, random_state=33, axis=1)
 exp_dst = pd.DataFrame(scale(exp_dst), index=exp_dst.index, columns=exp_dst.columns)
