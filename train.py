@@ -37,7 +37,7 @@ def main():
     
     exp_dst = exp_dst.sample(frac=1, random_state=33, axis=1)
     exp_dst = pd.DataFrame(scale(exp_dst), index=exp_dst.index, columns=exp_dst.columns)
-    label_dst = label_dst.replace(np.nan, '', regex=True)
+    label_dst = label_dst.replace(np.nan, 'unlabeled', regex=True)
 
     # store data in list
     for i in range(exp_dst.shape[1]):
@@ -53,7 +53,7 @@ def main():
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
     train_ind = trainY.index
     train_smp = exp_dst.columns[train_ind]   
-    txt_labels = trainY # labels in txt format
+    txt_labels = trainY.values # labels in txt format
 
     # convert trainX to graph embedding
     flat_list = []
