@@ -33,6 +33,8 @@ labels = np.array(labels)
 (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
 
 # convert trainX to graph embedding
+trainX = trainX[0:50]
+trainY = trainY[0:50]
 flat_list = []
 for i in range(trainX.shape[0]):
     sample = []
@@ -40,7 +42,7 @@ for i in range(trainX.shape[0]):
         sample.append(trainX[i,j].item())
     flat_list.append(sample)
 
-nbrs = NearestNeighbors(n_neighbors=1000, algorithm='ball_tree').fit(flat_list)
+nbrs = NearestNeighbors(n_neighbors=5, algorithm='ball_tree').fit(flat_list)
 graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
 labels_t = trainY
 
