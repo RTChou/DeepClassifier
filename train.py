@@ -47,11 +47,14 @@ def main():
        labels.append([label])
     
     data = np.array(data)
-    labels = np.array(labels)
+    labels = pd.DataFrame(labels)
 
     # split the data into training and test sets
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
-    
+    train_ind = trainY.index
+    train_smp = exp_dst.columns[train_ind]   
+    txt_labels = trainY # labels in txt format
+
     # convert trainX to graph embedding
     flat_list = []
     for i in range(trainX.shape[0]):
@@ -62,7 +65,6 @@ def main():
     
     nbrs = NearestNeighbors(n_neighbors=1000, algorithm='ball_tree').fit(flat_list)
     graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
-    labels_t = trainY
 
     # one-hot encoding
     lb = LabelBinarizer()
