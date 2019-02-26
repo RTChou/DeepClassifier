@@ -73,7 +73,7 @@ def get_label_pairs(labels, unlabeled='unlabeled'):
     """
     ind = []; lab = []; pos = []; neg = []
     for i in range(len(labels)):
-        if labels[i] != unlabeled:
+        if labels[i].item() != unlabeled:
             ind.append(i)
             lab.append(labels[i].item())
     for j in range(len(lab)):
