@@ -96,7 +96,7 @@ nx.draw(G, pos, node_size=800, width=3, node_color=color_map, edge_color='grey')
 nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
 for i in range(len(train_smp)):
     x,y = pos[train_smp[i].item()]
-    plt.text(x, y - 0.08, style='italic', s=txt_labels[i].item() + '\n(' + train_smp[i].item() + ')', horizontalalignment='center')
+    plt.text(x, y - 0.08, style='italic', fontweight='bold', s=txt_labels[i].item() + '\n(' + train_smp[i].item() + ')', horizontalalignment='center')
 
 fig.savefig('graph.png', transparent=True)
 plt.show()
