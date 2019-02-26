@@ -52,6 +52,12 @@ np.savetxt('train_smp.csv',train_smp,delimiter=',',fmt="%s")
 np.savetxt('txt_labels.csv',txt_labels,delimiter=',',fmt="%s")
 np.savetxt('graph.csv',graph,delimiter=',')
 
+# sample context dist
+from methods.negative_sampling import sample_context_dist
+np.random.seed(123)
+for i in range(10):
+    sample_context_dist(graph, txt_labels, 0.5, 0.5, 3, 2)
+
 # plot graph
 from numpy import genfromtxt
 import matplotlib.pyplot as plt
