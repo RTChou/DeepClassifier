@@ -46,7 +46,10 @@ def random_walk(graph, q):
     w = np.random.randint(len(graph), size=1).item()
     s.append(w)
     for i in range(q - 1):
-        p = (1 / (1 + graph[w])) / sum(1 / (1 + graph[w])) # convert distance to prob
+        # convert distance to prob
+        sim = 1 / (1 + graph[w])
+        sim[sim == 1] = 0
+        p = sim / sum(sim)
         w = np.random.choice(len(graph), 1, p=p).item()
         s.append(w)
     return s
@@ -64,13 +67,13 @@ def sample_nodes(s, d):
     ind = np.random.randint(len(node_pairs), size=1).item()
     return node_pairs[ind]
 
-def get_label_pairs(labels):
+def get_label_pairs(labels, unlabeled='unlabeled'):
     """
     labels: training labels before one-hot encoding
     """
     ind = []; lab = []; pos = []; neg = []
     for i in range(len(labels)):
-        if labels[i] != '':
+        if labels[i] != unlabeled:
             ind.append(i)
             lab.append(labels[i].item())
     for j in range(len(lab)):
