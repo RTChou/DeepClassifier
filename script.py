@@ -66,7 +66,7 @@ txt_labels = df.values
 graph = genfromtxt('graph.csv', delimiter=',')
 
 fig = plt.figure(figsize=(8.0, 8.0))
-seed = 10
+seed = 43
 np.random.seed(seed)
 G=nx.Graph()
 unlabled_smp=[]
