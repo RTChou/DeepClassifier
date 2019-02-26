@@ -65,6 +65,7 @@ df=pd.read_csv('txt_labels.csv', sep=',',header=None)
 txt_labels = df.values
 graph = genfromtxt('graph.csv', delimiter=',')
 
+fig = plt.figure(figsize=(8.0, 8.0))
 seed = 10
 np.random.seed(seed)
 G=nx.Graph()
@@ -97,5 +98,6 @@ for i in range(len(train_smp)):
     x,y = pos[train_smp[i].item()]
     plt.text(x, y - 0.08, style='italic', s=txt_labels[i].item() + '\n(' + train_smp[i].item() + ')', horizontalalignment='center')
 
+fig.savefig('graph.png', transparent=True)
 plt.show()
 
