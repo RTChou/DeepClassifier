@@ -54,7 +54,7 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     output1 = Dense(nb_classes, activation='softmax')(concatenated)
     output2 = Dense(1, activation='sigmoid')(dot_product) # softmax?
 
-    cnn = Model(inputs=[input1, input2], outputs=[output1, output2], name='graphSemiCNN')
+    model = Model(inputs=[input1, input2], outputs=[output1, output2], name='graphSemiCNN')
 
     losses = {
         'output1': 'categorical_crossentropy',
@@ -63,7 +63,7 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     lossWeights = {'output1': 1.0, 'output2': lambd}  
     opt = SGD(lr=INIT_LR)
     
-    cnn.compile(loss=losses, optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
+    model.compile(loss=losses, optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
     
-    return cnn
+    return model
 
