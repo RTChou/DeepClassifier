@@ -8,9 +8,10 @@ from sklearn.preprocessing import scale
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.neighbors import NearestNeighbors
-from methods.graphSemiCNN import build_model
+from methods.negative_sampling import sample_context_dist
+from methods.graphSemiCNN import GraphSemiCNN
+from sklearn.metrics import classification_report
 
-# from sklearn.metrics import classification_report
 # from imutils import paths
 # import matplotlib.pyplot as plt
 # import pickle
@@ -25,6 +26,7 @@ def main():
     parser.add_argument('-m', '--model', required=True, help='path to output trained model')
     parser.add_argument('-b', '--label-bin', required=True, help='path to output label binarizer')
     parser.add_argement('-p', '--plot', required=True, help='path to output accuracy/loss plot')
+    # parser.add_argement('-t', '--epochs', default=75, type=int, help='number of epochs to train for')
     args = parser.parse_args()
 
     print('[INFO] loading training data...')
@@ -72,8 +74,22 @@ def main():
     testY = lb.transform(testY)
     nb_classes = len(lb.classes_)
 
+    # sample context distribution
+    np.random.seed(123)
+    for i in range(2000):
+        sample_context_dist(graph, txt_labels, 0.5, 0.5, 20, 2)
+ 
     # initialize the model
-    models = build_model(trainX, trainY, testX, testY, nb_classes)
+    model = GraphSemiCNN(trainX, trainY, testX, testY, nb_classes)
+    
+    # build and train the model
+    model.build()
+    model.train()
+
+    # evaluate the model
+    predictions = model.predict()
+    print(classification_report(testY.argmax(axis=1),
+	predictions.argmax(axis=1), target_names=lb.classes_))
 
 if __name__ == "__main__":
     main()
