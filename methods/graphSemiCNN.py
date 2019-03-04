@@ -19,7 +19,7 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     L1CNN = 0
     # dropout = 0.75 # parm for preventing overfitting
     actfun = 'relu'
-    pool_size = 11 # window of eatures
+    pool_size = 11 # window of features
     units1 = 11000 # numberof nodes in hidden layer
     units2 = 5500
     units3 = 5500
