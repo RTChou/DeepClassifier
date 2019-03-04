@@ -2,6 +2,7 @@ import keras.layers.convolutional as conv
 import keras.layers.pooling as pool
 import keras.regularizers as reg
 from keras.layers import Input, Activation, Flatten, Dense, Concatenate, Reshape
+from keras.layers.merge import Dot
 from keras.models import Model
 from keras.optimizers import SGD # stochastic gradient descent
 
@@ -47,8 +48,7 @@ def build_model(trainX, trainY, testX, testY, nb_classes):
     hidden4 = Dense(units4, activation='relu')(target) # z3 -> z4
     concatenated = Concatenate(axis=0)([hidden2, hidden4]) # concatenate z2, z4
 
-    similarity = merge([target, context], mode='cos', dot_axes=0)
-    dot_product = merge([target, context], mode='dot', dot_axes=1)
+    dot_product = Dot(axes=1)([target, context])
     dot_product = Reshape((1,))(dot_product)
     
     output1 = Dense(nb_classes, activation='softmax')(concatenated)
