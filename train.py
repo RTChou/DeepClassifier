@@ -76,10 +76,22 @@ def main():
     graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
 
     print('[INFO] sampling from graph and label context...')
-    # sample context distribution
     np.random.seed(123)
-    for i in range(2000):
-        sample_context_dist(graph, txt_labels, 0.5, 0.5, 20, 2)
+
+    # sample context distribution for training
+    sample_size = 2000
+    input1_ind = []
+    input2_ind = []
+    output2 = []
+    for i in range(sample_size):
+        sample = sample_context_dist(graph, txt_labels, 0.5, 0.5, 20, 2)
+        input1_ind.append(sample[0])
+        input2_ind.append(sample[1])
+        output2.append(sample[3])
+    
+    # sample validation examples
+    valid_size = 5
+    valid_samples = np.random.randint(trainX.shape[0], size=valid_size)
  
     print('[INFO] building and training the model...')
     # initialize the model
