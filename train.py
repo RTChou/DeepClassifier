@@ -91,7 +91,7 @@ def main():
     
     # sample validation examples
     valid_size = 5
-    valid_samples = np.random.randint(trainX.shape[0], size=valid_size)
+    valid_smp = np.random.randint(trainX.shape[0], size=valid_size)
  
     print('[INFO] building and training the model...')
     # initialize the model
