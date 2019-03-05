@@ -57,6 +57,13 @@ def main():
     train_smp = exp_dst.columns[train_ind]   
     txt_labels = trainY.values # labels in txt format
 
+    # one-hot encoding
+    lb = LabelBinarizer()
+    trainY = lb.fit_transform(trainY)
+    testY = lb.transform(testY)
+    nb_classes = len(lb.classes_)
+
+    print('[INFO] creating KNN graph from training data...')
     # convert trainX to graph embedding
     flat_list = []
     for i in range(trainX.shape[0]):
@@ -68,17 +75,13 @@ def main():
     nbrs = NearestNeighbors(n_neighbors=1000, algorithm='ball_tree').fit(flat_list)
     graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
 
-    # one-hot encoding
-    lb = LabelBinarizer()
-    trainY = lb.fit_transform(trainY)
-    testY = lb.transform(testY)
-    nb_classes = len(lb.classes_)
-
+    print('[INFO] sampling from graph and label context...')
     # sample context distribution
     np.random.seed(123)
     for i in range(2000):
         sample_context_dist(graph, txt_labels, 0.5, 0.5, 20, 2)
  
+    print('[INFO] building and training the model...')
     # initialize the model
     model = GraphSemiCNN(trainX, trainY, testX, testY, nb_classes)
     
