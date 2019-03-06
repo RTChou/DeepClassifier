@@ -4,7 +4,7 @@
 import pandas as pd
 import numpy as np
 import argparse
-from methods.utils import load_data, graph_embed
+from methods.utils import load_data, graph_embed, split_data
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
 from methods.negative_sampling import sample_context_dist
@@ -40,25 +40,22 @@ def main():
 
     # load data, shuffle the samples, and scale data
     print('[INFO] loading training data...')
-    data, labels = load_data(exp_path, label_path)
+    samples, data, labels = load_data(exp_path, label_path)
 
-    # convert training data to graph embedding
-    print('[INFO] creating KNN graph from training data...')
+    # convert data to graph embedding
+    print('[INFO] creating KNN graph from data...')
     graph = graph_embed(data, nb_neighbors)
 
-    # sample context distribution for training
+    # sample context distribution
     print('[INFO] sampling from graph and label context...')
     input1_ind, input2_ind, output2 = sample_training_set(sample_size, graph, labels)
-    
-    
-    
-    
-    # split the data into training and test sets
-    (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
-    train_ind = trainY.index
-    train_smp = exp_dst.columns[train_ind]   
-    txt_labels = trainY.values # labels in txt format
+    smp_names = [samples[input1_ind], samples[input2_ind]]
+    inputs = [data[input1_ind], data[input2_ind]]
+    outputs = [labels[input1_ind], output2]
 
+    # 60% train set, 20% validation set, 20% test set 
+    smp, inp, out = split_data(smp_names, inputs, outputs, portion=[.6, .2]) 
+    
     # one-hot encoding
     lb = LabelBinarizer()
     trainY = lb.fit_transform(trainY)
