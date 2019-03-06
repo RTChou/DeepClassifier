@@ -54,6 +54,7 @@ def main():
     outputs = [labels[input1_ind], output2]
 
     # 60% train set, 20% validation set, 20% test set 
+    print('[INFO] splitting data into training, validation, and testing sets...')
     smp, inp, out = split_data(smp_names, inputs, outputs, portion=[.6, .2]) 
     
     # one-hot encoding
@@ -64,13 +65,10 @@ def main():
     out['test'][0] = lb.transform(out['test'][0])
     nb_classes = len(lb.classes_)
 
-    # sample validation examples
-    valid_size = 5
-    valid_smp = np.random.randint(trainX.shape[0], size=valid_size)
  
     print('[INFO] building and training the model...')
     # initialize the model
-    model = GraphSemiCNN(trainX, trainY, testX, testY, nb_classes)
+    model = GraphSemiCNN(inp, out, nb_classes)
     
     # build and train the model
     model.build()
