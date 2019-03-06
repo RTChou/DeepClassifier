@@ -58,8 +58,10 @@ def main():
     
     # one-hot encoding
     lb = LabelBinarizer()
-    trainY = lb.fit_transform(trainY)
-    testY = lb.transform(testY)
+    lb.fit(labels)
+    out['train'][0] = lb.transform(out['train'][0])
+    out['validate'][0] = lb.transform(out['validate'][0])
+    out['test'][0] = lb.transform(out['test'][0])
     nb_classes = len(lb.classes_)
 
     # sample validation examples

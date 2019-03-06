@@ -1,52 +1,47 @@
-import argparse
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import scale
+import argparse
+from methods.utils import load_data, graph_embed, split_data
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
-from sklearn.neighbors import NearestNeighbors
-from methods.graphSemiCNN import build_model
+from methods.negative_sampling import sample_context_dist
+from methods.graphSemiCNN import GraphSemiCNN
+from sklearn.metrics import classification_report
 
-data = [] # training data
-labels = []
+exp_path = '~/Downloads/imputation/rnaseq_data_tpm_from_metadata.tsv'
+label_path = '~/Downloads/imputation/rnaseq_label_from_metadata.tsv'
+# model_path = args.model
+# label_bin_path = args.label_bin
+# plot_path = args.plot
+
+nb_neighbors = 2
+sample_size = 10000
 
 # load data, shuffle the samples, and scale data
-exp_dst = pd.read_csv('~/Downloads/imputation/rnaseq_data_tpm_from_metadata.tsv', sep='\t', index_col=0)
-label_dst = pd.read_csv('~/Downloads/imputation/rnaseq_label_from_metadata.tsv', sep='\t', index_col=0)
+print('[INFO] loading training data...')
+samples, data, labels = load_data(exp_path, label_path)
 
-exp_dst = exp_dst.sample(frac=1, random_state=33, axis=1)
-exp_dst = pd.DataFrame(scale(exp_dst), index=exp_dst.index, columns=exp_dst.columns)
-label_dst = label_dst.replace(np.nan, 'unlabeled', regex=True)
+# convert data to graph embedding
+print('[INFO] creating KNN graph from data...')
+graph = graph_embed(data, nb_neighbors)
 
-# store data in list
-for i in range(exp_dst.shape[1]):
-   exp = list(exp_dst.iloc[:,i].values)
-   label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
-   data.append([[i] for i in exp])
-   labels.append([label])
+# sample context distribution
+print('[INFO] sampling from graph and label context...')
+input1_ind, input2_ind, output2 = sample_training_set(sample_size, graph, labels)
+smp_names = [samples[input1_ind], samples[input2_ind]]
+inputs = [data[input1_ind], data[input2_ind]]
+outputs = [labels[input1_ind], output2]
 
-data = np.array(data)
-labels = pd.DataFrame(labels)
+# 60% train set, 20% validation set, 20% test set 
+smp, inp, out = split_data(smp_names, inputs, outputs, portion=[.6, .2])
 
-# split the data into training and test sets
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
-train_ind = trainY.index
-train_smp = exp_dst.columns[train_ind]
-txt_labels = trainY.values # labels in txt format
-
-trainX = trainX[0:10]
-train_smp = train_smp[0:10]
-txt_labels = txt_labels[0:10]
-# convert trainX to graph embedding
-flat_list = []
-for i in range(trainX.shape[0]):
-    sample = []
-    for j in range(trainX.shape[1]):
-        sample.append(trainX[i,j].item())
-    flat_list.append(sample)
-
-nbrs = NearestNeighbors(n_neighbors=2, algorithm='ball_tree').fit(flat_list)
-graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
+# one-hot encoding
+lb = LabelBinarizer()
+lb.fit(labels)
+out['train'][0] = lb.transform(out['train'][0])
+out['validate'][0] = lb.transform(out['validate'][0])
+out['test'][0] = lb.transform(out['test'][0])
+nb_classes = len(lb.classes_)
 
 np.savetxt('train_smp.csv',train_smp,delimiter=',',fmt="%s")
 np.savetxt('txt_labels.csv',txt_labels,delimiter=',',fmt="%s")
