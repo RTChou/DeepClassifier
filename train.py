@@ -7,7 +7,6 @@ import argparse
 from methods.utils import load_data, graph_embed, split_data
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer
-from methods.negative_sampling import sample_context_dist
 from methods.graphSemiCNN import GraphSemiCNN
 from sklearn.metrics import classification_report
 
@@ -65,10 +64,11 @@ def main():
     out['test'][0] = lb.transform(out['test'][0])
     nb_classes = len(lb.classes_)
 
- 
+    # build and train the model
     print('[INFO] building and training the model...')
-    # initialize the model
-    model = GraphSemiCNN(inp, out, nb_classes)
+    nb_samples = inp[0].shape[0]
+    nb_genes = inp[0].shape[1]
+    model = GraphSemiCNN(nb_genes, nb_classes)
     
     # build and train the model
     model.build()
