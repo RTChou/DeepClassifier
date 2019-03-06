@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import scale
 from sklearn.neighbors import NearestNeighbors
-from negative_sampling import sample_context_dist, get_label_pairs
+from .negative_sampling import sample_context_dist, get_label_pairs
 
 def load_data(exp_path, label_path, random_state=33):
     data = [] # training data
