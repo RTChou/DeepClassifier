@@ -51,16 +51,8 @@ def main():
     input1_ind, input2_ind, output2 = sample_training_set(sample_size, graph, labels)
     
     
-    np.random.seed(123)
-    input1_ind = []
-    input2_ind = []
-    output2 = []
-    for i in range(sample_size):
-        sample = sample_context_dist(graph, txt_labels, 0.5, 0.5, 20, 2)
-        input1_ind.append(sample[0])
-        input2_ind.append(sample[1])
-        output2.append(sample[3])
-
+    
+    
     # split the data into training and test sets
     (trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=33)
     train_ind = trainY.index

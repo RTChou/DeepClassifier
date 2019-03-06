@@ -1,6 +1,6 @@
 import numpy as np
 
-def sample_context_dist(graph, labels, r1, r2, q, d):
+def sample_context_dist(graph, labels, r1, r2, q, d, pair_sets):
     """
      graph: knn graph with distances as edges
     labels: training labels before one-hot encoding
@@ -24,7 +24,6 @@ def sample_context_dist(graph, labels, r1, r2, q, d):
         if gamma == -1:
             c = np.random.randint(len(graph), size=1).item()
     else:
-        pair_sets = get_label_pairs(labels)
         if gamma == 1:
             smpl_pair = pair_sets[0][np.random.randint(len(pair_sets[0]), size=1).item()]
             i = smpl_pair[0]
