@@ -11,7 +11,7 @@ Semi-supervised learning with convolution neural network
 """
 class GraphSemiCNN: 
     @staticmethod
-    def build(self, nb_genes, nb_classes):
+    def build(nb_genes, nb_classes):
         # params
         # dropout = 0.75 # prevent overfitting
 
