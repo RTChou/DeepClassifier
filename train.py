@@ -1,12 +1,11 @@
 import matplotlib
 matplotlib.use('Agg')
 
-import pandas as pd
-import numpy as np
 import argparse
 from methods.utils import load_data, graph_embed, sample_training_set, split_data, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
+from methods.similarityCallback import SimilarityCallback
 from sklearn.metrics import classification_report
 import pickle
 
@@ -30,7 +29,7 @@ def main():
     
     nb_neighbors = 2
     sample_size = 10000
-    batch_size = 64
+    batch_size = 32
 
     # load data, shuffle the samples, and scale data
     print('[INFO] loading training data...')
@@ -61,11 +60,11 @@ def main():
 
     # build and train the model
     print('[INFO] building and training the model...')
-    # nb_samples = inp['train'][0].shape[0]
     nb_genes = inp['train'][0].shape[1]
     model = GraphSemiCNN.build(nb_genes, nb_classes)
+    similarities = SimilarityCallback()
     fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
-            epochs=nb_epochs, batch_size=batch_size) 
+            epochs=nb_epochs, batch_size=batch_size, callbacks=[similarities]) 
 
     # evaluate the model
     print('[INFO] evaluating the model...')

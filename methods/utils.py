@@ -86,6 +86,7 @@ def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
     
     return smp, inp, out
 
+
 def plot_loss_acc(plot_path, nb_epochs, fit_history):
     N = np.arrange(0, nb_epochs)
     H = fit_history
@@ -100,4 +101,5 @@ def plot_loss_acc(plot_path, nb_epochs, fit_history):
     plt.ylabel('Loss/Accuracy')
     plt.legend()
     plt.savefig(plot_path)
+
 
