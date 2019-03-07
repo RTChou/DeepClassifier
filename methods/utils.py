@@ -58,6 +58,9 @@ def sample_training_set(sample_size, graph, labels, random_seed=123, r1=0.5, r2=
         input1_ind.append(sample[0])
         input2_ind.append(sample[1])
         output2.append(sample[2])
+
+    output2 = np.array(output2)
+    
     return input1_ind, input2_ind, output2
 
 
