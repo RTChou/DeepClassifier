@@ -4,15 +4,13 @@
 import pandas as pd
 import numpy as np
 import argparse
-from methods.utils import load_data, graph_embed, split_data
-from sklearn.model_selection import train_test_split
+from methods.utils import load_data, graph_embed, sample_training_set, split_data, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 from sklearn.metrics import classification_report
+import pickle
 
 # from imutils import paths
-# import matplotlib.pyplot as plt
-# import pickle
 # import cv2 # not being used
 # import os
 # import keras.models as models
@@ -24,7 +22,7 @@ def main():
     parser.add_argument('-m', '--model', required=True, help='path to output trained model')
     parser.add_argument('-b', '--label_bin', required=True, help='path to output label binarizer')
     parser.add_argement('-p', '--plot', required=True, help='path to output accuracy/loss plot')
-    # parser.add_argement('-t', '--epochs', default=75, type=int, help='number of epochs to train for')
+    parser.add_argement('-c', '--epochs', default=75, type=int, help='number of epochs to train for')
     args = parser.parse_args()
 
     # params
@@ -33,9 +31,11 @@ def main():
     model_path = args.model
     label_bin_path = args.label_bin
     plot_path = args.plot
+    nb_epochs = args.epochs
     
     nb_neighbors = 2
     sample_size = 10000
+    batch_size = 64
 
     # load data, shuffle the samples, and scale data
     print('[INFO] loading training data...')
@@ -68,14 +68,25 @@ def main():
     print('[INFO] building and training the model...')
     nb_samples = inp['train'][0].shape[0]
     nb_genes = inp['train'][0].shape[1]
-    model = GraphSemiCNN(nb_genes, nb_classes)
-    fitHistory = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
-            epochs=nb_epochs, batch_size=32) 
+    model = GraphSemiCNN.build(nb_genes, nb_classes)
+    fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
+            epochs=nb_epochs, batch_size=batch_size) 
 
     # evaluate the model
-    predictions = model.predict()
-    print(classification_report(testY.argmax(axis=1),
-	predictions.argmax(axis=1), target_names=lb.classes_))
+    print('[INFO] evaluating the model...')
+    predictions = model.predict(inp['test'], batch_size=batch_size)
+    print(classification_report(out['test'][0].argmax(axis=1),
+	predictions[0].argmax(axis=1), target_names=lb.classes_))
+
+    # plot the training loss and accuracy
+    plot_loss_acc(plot_path, nb_epochs, fit_history)
+
+    # save the model and label binarizer
+    print('[INFO] serializing the model and label binarizer...')
+    model.save(model_path)
+    f = open(label_bin_path, 'wb')
+    f.write(pickle.dumps(lb))
+    f.close()
 
 if __name__ == "__main__":
     main()

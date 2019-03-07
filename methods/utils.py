@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.preprocessing import scale
 from sklearn.neighbors import NearestNeighbors
 from .negative_sampling import sample_context_dist, get_label_pairs
+import matplotlib.pyplot as plt
 
 def load_data(exp_path, label_path, random_state=33):
     data = [] # training data
@@ -83,4 +84,19 @@ def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
     out['test'] = [outputs[0][test], outputs[1][test]]
     
     return smp, inp, out
+
+def plot_loss_acc(plot_path, nb_epochs, fit_history):
+    N = np.arrange(0, nb_epochs)
+    H = fit_history
+    plt.style.use('ggplot')
+    plt.figure()
+    plt.plot(N, H.history['loss'], label='train_loss')
+    plt.plot(N, H.history['val_loss'], label='val_loss')
+    plt.plot(N, H.history['acc'], label='train_acc')
+    plt.plot(N, H.history['val_acc'], label='val_acc')
+    plt.title('Training Loss and Accuracy')
+    plt.xlabel('Number of Epochs')
+    plt.ylabel('Loss/Accuracy')
+    plt.legend()
+    plt.savefig(plot_path)
 
