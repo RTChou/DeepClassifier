@@ -72,7 +72,7 @@ class GraphSemiCNN:
         }
         lossWeights = {'output1': 1.0, 'output2': lamb}
         opt = SGD(lr=INIT_LR)      
-        cnn = model.compile(loss=losses, loss_weights=lossWeights, optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
+        model.compile(loss=losses, loss_weights=lossWeights, optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
         
-        return cnn
+        return model
 
