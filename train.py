@@ -64,6 +64,10 @@ def main():
     model = GraphSemiCNN.build(nb_genes, nb_classes)
     histories = HistoryCallback()
     similarities = SimilarityCallback()
+    
+    for e in range(nb_epochs):
+        loss = model.train_on_batch(inp['train'], out['train'])
+
     fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
             epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
 
