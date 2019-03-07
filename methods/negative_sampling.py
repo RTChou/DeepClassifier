@@ -47,7 +47,6 @@ def random_walk(graph, q):
     for i in range(q - 1):
         # convert distance to prob
         sim = 1 / (1 + graph[w])
-        sim[sim == 1] = 0
         p = sim / sum(sim)
         w = np.random.choice(len(graph), 1, p=p).item()
         s.append(w)
