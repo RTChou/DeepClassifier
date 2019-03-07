@@ -73,19 +73,6 @@ class GraphSemiCNN:
         lossWeights = {'output1': 1.0, 'output2': lamb}
         opt = SGD(lr=INIT_LR)      
         cnn = model.compile(loss=losses, loss_weights=lossWeights, optimizer=opt, metrics=['accuracy']) # loss function: cross entropy
+        
         return cnn
-
-
-
-        #  nb_epochs = nb_epochs
-        #  batch_size = batch_size
-
-        #  # train the model
-        #  fitHistory = model.fit(trainX, trainY, validation_data=(testX, testY), 
-        #          epochs=nb_epochs, batch_size=batch_size)
-        #  return fitHistory
-
-        #  # predict
-        #  predictions = model.predict(testX, batch_size)
-        #  return predictions
 

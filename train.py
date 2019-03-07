@@ -61,7 +61,7 @@ def main():
 
     # build and train the model
     print('[INFO] building and training the model...')
-    nb_samples = inp['train'][0].shape[0]
+    # nb_samples = inp['train'][0].shape[0]
     nb_genes = inp['train'][0].shape[1]
     model = GraphSemiCNN.build(nb_genes, nb_classes)
     fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
