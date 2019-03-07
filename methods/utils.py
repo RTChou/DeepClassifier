@@ -59,9 +59,7 @@ def sample_training_set(sample_size, graph, labels, random_seed=123, r1=0.5, r2=
         input2_ind.append(sample[1])
         output2.append(sample[2])
 
-    output2 = np.array(output2)
-    
-    return input1_ind, input2_ind, output2
+    return input1_ind, input2_ind, np.array(output2)
 
 
 def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
