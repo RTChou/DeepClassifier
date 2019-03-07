@@ -1,5 +1,5 @@
-# import matplotlib
-# matplotlib.use('Agg')
+import matplotlib
+matplotlib.use('Agg')
 
 import pandas as pd
 import numpy as np
@@ -9,11 +9,6 @@ from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 from sklearn.metrics import classification_report
 import pickle
-
-# from imutils import paths
-# import cv2 # not being used
-# import os
-# import keras.models as models
 
 def main():
     parser = argparse.ArgumentParser(description="This script is for training the semi-supervised neural network model")
