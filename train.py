@@ -5,7 +5,7 @@ import argparse
 from methods.utils import load_data, graph_embed, sample_training_set, split_data, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
-from methods.similarityCallback import SimilarityCallback
+from methods.similarityCallback import HistoryCallback, SimilarityCallback
 from sklearn.metrics import classification_report
 import pickle
 
@@ -62,9 +62,10 @@ def main():
     print('[INFO] building and training the model...')
     nb_genes = inp['train'][0].shape[1]
     model = GraphSemiCNN.build(nb_genes, nb_classes)
+    histories = HistoryCallback()
     similarities = SimilarityCallback()
     fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
-            epochs=nb_epochs, batch_size=batch_size, callbacks=[similarities]) 
+            epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
 
     # evaluate the model
     print('[INFO] evaluating the model...')
