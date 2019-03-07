@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import scale
 from sklearn.neighbors import NearestNeighbors
-from .negative_sampling import sample_context_dist, get_label_pairs
+from .negativeSampling import NegativeSampling
 import matplotlib.pyplot as plt
 
 def load_data(exp_path, label_path, random_state=33):
@@ -51,10 +51,10 @@ def sample_training_set(sample_size, graph, labels, random_seed=123, r1=0.5, r2=
     input1_ind = []
     input2_ind = []
     output2 = []
-    pair_sets = get_label_pairs(labels)
+    pair_sets = NegativeSampling.get_label_pairs(labels)
     
     for i in range(sample_size):
-        sample = sample_context_dist(graph, labels, r1, r2, q, d, pair_sets)
+        sample = NegativeSampling.sample_context_dist(graph, labels, r1, r2, q, d, pair_sets)
         input1_ind.append(sample[0])
         input2_ind.append(sample[1])
         output2.append(sample[2])
