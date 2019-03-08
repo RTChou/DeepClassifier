@@ -50,8 +50,7 @@ nb_classes = len(lb.classes_)
 print('[INFO] building and training the model...')
 nb_samples = inp['train'][0].shape[0]
 nb_genes = inp['train'][0].shape[1]
-model = GraphSemiCNN.build(nb_genes, nb_classes)
-
+model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)
 
 
 

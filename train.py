@@ -5,6 +5,7 @@ import argparse
 from methods.utils import load_data, graph_embed, sample_training_set, split_data, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
+import progressbar
 from methods.similarityCallback import HistoryCallback, SimilarityCallback
 from sklearn.metrics import classification_report
 import pickle
@@ -60,9 +61,10 @@ def main():
 
     # build and train the model
     print('[INFO] building and training the model...')
+    bar = progressbar.ProgressBar()
     nb_samples = inp['train'][0].shape[0]
     nb_genes = inp['train'][0].shape[1]
-    model, val_model = GraphSemiCNN.build(nb_genes, nb_classes)
+    model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)
     
     # callbacks
     histories = HistoryCallback()
