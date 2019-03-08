@@ -2,15 +2,11 @@ import keras
 from sklearn.metrics import roc_auc_score
 import numpy as np
 
-class HistoryCallback(keras.callbacks.Callback):
-    def on_train_begin(self, logs={}):
-        self.aucs = []
-
-    def on_epoch_end(self, epoch, logs={}):
-        y_pred = self.model.predict(self.validation_data[0])
-        self.aucs.append(roc_auc_score(self.validation_data[1][0], y_pred[0]))
-        return
-
+def history_callback(keras.callbacks.Callback):
+    self.aucs = []
+    y_pred = self.model.predict(self.validation_data[0])
+    self.aucs.append(roc_auc_score(self.validation_data[1][0], y_pred[0]))
+    return
 
 
 def similarity_callback(val, dat, val_model, valid_size=10, top=10, random_seed=308):

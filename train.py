@@ -61,7 +61,7 @@ def main():
     trn['out'][0] = lb.transform(trn['out'][0])
     val['out'][0] = lb.transform(val['out'][0])
     tst['out'][0] = lb.transform(tst['out'][0])
-    nb_classes = len(lb.classes_)
+    nb_classes = len(lb.classes_) # note: training classes vs data classes
 
     # build and train the model
     print('[INFO] building and training the model...')
