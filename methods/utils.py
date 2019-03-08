@@ -27,42 +27,52 @@ def load_data(exp_path, label_path, random_state=33):
     data = np.array(data)
     labels = np.array(labels)
     
-    return samples, data, labels
+    return {'smp': samples, 'inp': data, 'out': labels}
 
 
-def sample_training_set(data, labels, sample_size, nb_neighbors=2, random_seed=123, r1=0.5, r2=0.5, q=100, d=10):
+def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0.5, r2=0.5, q=100, d=10, portion=[.6, .2], random_seed2=33):
     """
-            data: expression data in array format
-          labels: data labels
+             dat: output from load_data
      sample_size: number of representative samples
     nb_neighbors: number of neighbors for calcularing k-nearest neighbors
-     random_seed: seed for random number generator
+    random_seed1: seed for sampling from context
+         poriton: portion of training, validatation, and test sets
+    random_seed2: seed for splitting the dataset
     """
     # construct graph
+    print('[INFO] creating KNN graph from data...')
     flat_list = []
-    for i in range(data.shape[0]):
+    for i in range(dat['int'].shape[0]):
         sample = []
-        for j in range(data.shape[1]):
-            sample.append(data[i,j].item())
+        for j in range(dat['int'].shape[1]):
+            sample.append(dat['int'][i,j].item())
         flat_list.append(sample)
     nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
     graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
 
     # sample context dist
-    np.random.seed(random_seed)
+    print('[INFO] sampling from graph and label context...')
+    np.random.seed(random_seed1)
     input1_ind = []
     input2_ind = []
     output2 = []
     ns = NegativeSampling()
-    pair_sets = ns.get_label_pairs(labels)
+    pair_sets = ns.get_label_pairs(dat['out'])
     
     for i in range(sample_size):
-        sample = ns.sample_context_dist(graph, labels, r1, r2, q, d, pair_sets)
+        sample = ns.sample_context_dist(graph, dat['out'], r1, r2, q, d, pair_sets)
         input1_ind.append(sample[0])
         input2_ind.append(sample[1])
         output2.append(sample[2])
 
-    return input1_ind, input2_ind, np.array(output2)
+    # split data into training, validation, and test sets
+    print('[INFO] splitting data into training, validation, and testing sets...')
+    trn, val, tst = split_data([dat['smp'][input1_ind], dat['smp'][input2_ind]], 
+            [dat['inp'][input1_ind], dat['inp'][input2_ind]], 
+            [dat['out'][input1_ind], np.array(output2)], 
+            outputs, poriton, random_seed2)    
+    
+    return trn, val, tst
 
 
 def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):

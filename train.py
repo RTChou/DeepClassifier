@@ -34,26 +34,14 @@ def main():
 
     # load data, shuffle the samples, and scale data
     print('[INFO] loading training data...')
-    dat = {}
-    samples, data, labels = load_data(exp_path, label_path)
-    dat['smp'] = samples
-    dat['inp'] = data
-    dat['out'] = labels
+    dat = load_data(exp_path, label_path)
 
-    # construct the KNN graph and sample context distribution
-    print('[INFO] sampling from graph and label context...')
-    input1_ind, input2_ind, output2 = sample_training_set(data, labels, sample_size)
-    smp_names = [samples[input1_ind], samples[input2_ind]]
-    inputs = [data[input1_ind], data[input2_ind]]
-    outputs = [labels[input1_ind], output2]
-
-    # 60% train set, 20% validation set, 20% test set 
-    print('[INFO] splitting data into training, validation, and testing sets...')
-    trn, val, tst = split_data(smp_names, inputs, outputs, portion=[.6, .2]) 
+    # construct the KNN graph, sample context distribution, and split the data (60% trn; 20% val; 20% tst)
+    trn, val, tst = sample_training_set(dat, sample_size)
     
     # one-hot encoding
     lb = LabelBinarizer()
-    lb.fit(labels)
+    lb.fit(dat['out']) # labels
     trn['out'][0] = lb.transform(trn['out'][0])
     val['out'][0] = lb.transform(val['out'][0])
     tst['out'][0] = lb.transform(tst['out'][0])
@@ -65,10 +53,6 @@ def main():
     nb_genes = trn['inp'][0].shape[1]
     model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)
     
-    # callbacks
-    histories = HistoryCallback()
-    similarities = SimilarityCallback()
-   
     history = {}
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
@@ -82,6 +66,7 @@ def main():
                 validY = [val['out'][0][ind_list[j]], val['out'][1][ind_list[j]]]
                 loss = model.train_on_batch(trainX, trainY)
                 val_loss = model.evaluate(validX, validY)
+            history_callback()
             similarity_callback(val, dat, val_model)
 
     history['loss'] = loss
