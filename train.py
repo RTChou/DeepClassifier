@@ -2,7 +2,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 import argparse
-from methods.utils import load_data, graph_embed, sample_training_set, split_data, plot_loss_acc
+from methods.utils import load_data, sample_training_set, split_data, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 import progressbar
@@ -40,13 +40,9 @@ def main():
     dat['inp'] = data
     dat['out'] = labels
 
-    # convert data to graph embedding
-    print('[INFO] creating KNN graph from data...')
-    graph = graph_embed(data, nb_neighbors)
-
-    # sample context distribution
+    # construct the KNN graph and sample context distribution
     print('[INFO] sampling from graph and label context...')
-    input1_ind, input2_ind, output2 = sample_training_set(sample_size, graph, labels)
+    input1_ind, input2_ind, output2 = sample_training_set(data, labels, sample_size)
     smp_names = [samples[input1_ind], samples[input2_ind]]
     inputs = [data[input1_ind], data[input2_ind]]
     outputs = [labels[input1_ind], output2]

@@ -30,11 +30,15 @@ def load_data(exp_path, label_path, random_state=33):
     return samples, data, labels
 
 
-def graph_embed(data, nb_neighbors=2):
+def sample_training_set(data, labels, sample_size, nb_neighbors=2, random_seed=123, r1=0.5, r2=0.5, q=100, d=10):
     """
-            data: training data in array format
+            data: expression data in array format
+          labels: data labels
+     sample_size: number of representative samples
     nb_neighbors: number of neighbors for calcularing k-nearest neighbors
+     random_seed: seed for random number generator
     """
+    # construct graph
     flat_list = []
     for i in range(data.shape[0]):
         sample = []
@@ -43,10 +47,8 @@ def graph_embed(data, nb_neighbors=2):
         flat_list.append(sample)
     nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
     graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
-    return graph
 
-
-def sample_training_set(sample_size, graph, labels, random_seed=123, r1=0.5, r2=0.5, q=100, d=10):
+    # sample context dist
     np.random.seed(random_seed)
     input1_ind = []
     input2_ind = []

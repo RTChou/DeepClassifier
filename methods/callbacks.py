@@ -1,11 +1,10 @@
-import keras
 from sklearn.metrics import roc_auc_score
 import numpy as np
 
-def history_callback(keras.callbacks.Callback):
-    self.aucs = []
-    y_pred = self.model.predict(self.validation_data[0])
-    self.aucs.append(roc_auc_score(self.validation_data[1][0], y_pred[0]))
+def history_callback(model):
+    aucs = []
+    y_pred = model.predict(self.validation_data[0])
+    aucs.append(roc_auc_score(self.validation_data[1][0], y_pred[0]))
     return
 
 
