@@ -69,6 +69,10 @@ def main():
             history_callback()
             similarity_callback(val, dat, val_model)
 
+    # loss = loss[0]
+    # acc = loss[1]
+    # val_loss = val_loss[0]
+    # val_acc = val_loss[1]
     history['loss'] = loss
     history['val_loss'] = val_loss
 
