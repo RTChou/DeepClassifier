@@ -70,22 +70,22 @@ def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
     np.random.shuffle(ind)
     train, valid, test = np.split(ind, [int(portion[0]*sample_size), int(sum(portion)*sample_size)])
 
-    smp = {}
-    smp['train'] = [smp_names[0][train], smp_names[1][train]]
-    smp['valid'] = [smp_names[0][valid], smp_names[1][valid]]
-    smp['test'] = [smp_names[0][test], smp_names[1][test]]
+    trn = {}
+    trn['smp'] = [smp_names[0][train], smp_names[1][train]]
+    trn['inp'] = [inputs[0][train], inputs[1][train]]
+    trn['out'] = [outputs[0][train], outputs[1][train]]
 
-    inp = {}
-    inp['train'] = [inputs[0][train], inputs[1][train]] 
-    inp['valid'] = [inputs[0][valid], inputs[1][valid]]
-    inp['test'] = [inputs[0][test], inputs[1][test]]
-    
-    out = {}
-    out['train'] = [outputs[0][train], outputs[1][train]]
-    out['valid'] = [outputs[0][valid], outputs[1][valid]]
-    out['test'] = [outputs[0][test], outputs[1][test]]
-    
-    return smp, inp, out
+    val = {}
+    val['smp'] = [smp_names[0][valid], smp_names[1][valid]]
+    val['inp'] = [inputs[0][valid], inputs[1][valid]]
+    val['out'] = [outputs[0][valid], outputs[1][valid]]
+
+    tst = {}
+    tst['smp'] = [smp_names[0][test], smp_names[1][test]]
+    tst['inp'] = [inputs[0][test], inputs[1][test]]
+    tst['out'] = [outputs[0][test], outputs[1][test]]
+
+    return trn, val, tst
 
 
 def plot_loss_acc(plot_path, nb_epochs, fit_history):
