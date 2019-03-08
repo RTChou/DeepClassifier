@@ -10,8 +10,7 @@ from keras.optimizers import SGD # stochastic gradient descent
 Semi-supervised learning with convolution neural network
 """
 class GraphSemiCNN: 
-    @staticmethod
-    def build(nb_genes, nb_classes):
+    def build(self, nb_genes, nb_classes):
         # params
         # dropout = 0.75 # prevent overfitting
 

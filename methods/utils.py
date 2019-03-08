@@ -21,7 +21,7 @@ def load_data(exp_path, label_path, random_state=33):
        exp = list(exp_dst.iloc[:,i].values)
        label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
        data.append([[i] for i in exp])
-       labels.append([label])    
+       labels.append([label])
    
     samples = exp_dst.columns
     data = np.array(data)
@@ -51,10 +51,11 @@ def sample_training_set(sample_size, graph, labels, random_seed=123, r1=0.5, r2=
     input1_ind = []
     input2_ind = []
     output2 = []
-    pair_sets = NegativeSampling.get_label_pairs(labels)
+    ns = NegativeSampling()
+    pair_sets = ns.get_label_pairs(labels)
     
     for i in range(sample_size):
-        sample = NegativeSampling.sample_context_dist(graph, labels, r1, r2, q, d, pair_sets)
+        sample = ns.sample_context_dist(graph, labels, r1, r2, q, d, pair_sets)
         input1_ind.append(sample[0])
         input2_ind.append(sample[1])
         output2.append(sample[2])

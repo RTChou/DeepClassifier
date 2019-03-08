@@ -1,8 +1,7 @@
 import numpy as np
 
 class NegativeSampling:
-    @staticmethod
-    def get_label_pairs(labels, unlabeled='unlabeled'):
+    def get_label_pairs(self, labels, unlabeled='unlabeled'):
         """
         labels: training labels before one-hot encoding
         """
@@ -19,8 +18,7 @@ class NegativeSampling:
                     neg.append([ind[j], ind[k]])
         return (pos, neg)
 
-    @staticmethod
-    def sample_context_dist(inst, graph, labels, r1, r2, q, d, pair_sets):
+    def sample_context_dist(self, graph, labels, r1, r2, q, d, pair_sets):
         """
          graph: knn graph with distances as edges
         labels: training labels before one-hot encoding
@@ -37,8 +35,8 @@ class NegativeSampling:
         else:
             gamma = -1
         if np.random.rand(1) < r2:
-            s = inst.random_walk(graph, q)
-            smpl_pair = inst.sample_nodes(s, d)
+            s = self.random_walk(graph, q)
+            smpl_pair = self.sample_nodes(s, d)
             i = smpl_pair[0]
             c = smpl_pair[1]
             if gamma == -1:
