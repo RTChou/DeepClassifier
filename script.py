@@ -42,7 +42,7 @@ smp, inp, out = split_data(smp_names, inputs, outputs, portion=[.6, .2])
 lb = LabelBinarizer()
 lb.fit(labels)
 out['train'][0] = lb.transform(out['train'][0])
-out['validate'][0] = lb.transform(out['validate'][0])
+out['valid'][0] = lb.transform(out['valid'][0])
 out['test'][0] = lb.transform(out['test'][0])
 nb_classes = len(lb.classes_)
 

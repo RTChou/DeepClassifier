@@ -67,21 +67,21 @@ def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
     np.random.seed(random_seed)
     ind = np.arange(sample_size)
     np.random.shuffle(ind)
-    train, validate, test = np.split(ind, [int(portion[0]*sample_size), int(sum(portion)*sample_size)])
+    train, valid, test = np.split(ind, [int(portion[0]*sample_size), int(sum(portion)*sample_size)])
 
     smp = {}
     smp['train'] = [smp_names[0][train], smp_names[1][train]]
-    smp['validate'] = [smp_names[0][validate], smp_names[1][validate]]
+    smp['valid'] = [smp_names[0][valid], smp_names[1][valid]]
     smp['test'] = [smp_names[0][test], smp_names[1][test]]
 
     inp = {}
     inp['train'] = [inputs[0][train], inputs[1][train]] 
-    inp['validate'] = [inputs[0][validate], inputs[1][validate]]
+    inp['valid'] = [inputs[0][valid], inputs[1][valid]]
     inp['test'] = [inputs[0][test], inputs[1][test]]
     
     out = {}
     out['train'] = [outputs[0][train], outputs[1][train]]
-    out['validate'] = [outputs[0][validate], outputs[1][validate]]
+    out['valid'] = [outputs[0][valid], outputs[1][valid]]
     out['test'] = [outputs[0][test], outputs[1][test]]
     
     return smp, inp, out

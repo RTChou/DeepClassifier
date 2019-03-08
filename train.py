@@ -54,7 +54,7 @@ def main():
     lb = LabelBinarizer()
     lb.fit(labels)
     out['train'][0] = lb.transform(out['train'][0])
-    out['validate'][0] = lb.transform(out['validate'][0])
+    out['valid'][0] = lb.transform(out['valid'][0])
     out['test'][0] = lb.transform(out['test'][0])
     nb_classes = len(lb.classes_)
 
@@ -62,7 +62,7 @@ def main():
     print('[INFO] building and training the model...')
     nb_samples = inp['train'][0].shape[0]
     nb_genes = inp['train'][0].shape[1]
-    model = GraphSemiCNN.build(nb_genes, nb_classes)
+    model, val_model = GraphSemiCNN.build(nb_genes, nb_classes)
     
     # callbacks
     histories = HistoryCallback()
@@ -73,13 +73,17 @@ def main():
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
     for e in range(nb_epochs):
         for i in len(ind_list):
-            loss = model.train_on_batch(inp['train'], out['train'])
-            val_loss = model.evaluate(inp['validate'], out['validate'])
+            trainX = [inp['train'][0][ind_list[i]], inp['train'][1][ind_list[i]]]
+            trainY = [out['train'][0][ind_list[i]], out['train'][1][ind_list[i]]]
+            validX = [inp['valid'][0][ind_list[i]], inp['valid'][1][ind_list[i]]]
+            validY = [out['valid'][0][ind_list[i]], out['valid'][1][ind_list[i]]]
+        loss = model.train_on_batch(trainX, trainY)
+        val_loss = model.evaluate(validX, validY)
 
     history['loss'] = loss
     history['val_loss'] = val_loss
 
-    fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
+    fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['valid'], out['valid']), 
             epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
 
     # evaluate the model
