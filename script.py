@@ -1,12 +1,13 @@
-import pandas as pd
-import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+
 import argparse
-from methods.utils import load_data, graph_embed, split_data
-from sklearn.model_selection import train_test_split
+from methods.utils import load_data, graph_embed, sample_training_set, split_data, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
-from methods.negative_sampling import sample_context_dist
 from methods.graphSemiCNN import GraphSemiCNN
+from methods.similarityCallback import HistoryCallback, SimilarityCallback
 from sklearn.metrics import classification_report
+import pickle
 
 exp_path = '~/Downloads/imputation/rnaseq_data_tpm_from_metadata.tsv'
 label_path = '~/Downloads/imputation/rnaseq_label_from_metadata.tsv'
@@ -14,8 +15,10 @@ label_path = '~/Downloads/imputation/rnaseq_label_from_metadata.tsv'
 # label_bin_path = args.label_bin
 # plot_path = args.plot
 
+nb_epochs = 75
 nb_neighbors = 2
 sample_size = 10000
+batch_size = 32
 
 # load data, shuffle the samples, and scale data
 print('[INFO] loading training data...')
@@ -42,6 +45,15 @@ out['train'][0] = lb.transform(out['train'][0])
 out['validate'][0] = lb.transform(out['validate'][0])
 out['test'][0] = lb.transform(out['test'][0])
 nb_classes = len(lb.classes_)
+
+# build and train the model
+print('[INFO] building and training the model...')
+nb_samples = inp['train'][0].shape[0]
+nb_genes = inp['train'][0].shape[1]
+model = GraphSemiCNN.build(nb_genes, nb_classes)
+
+
+
 
 np.savetxt('train_smp.csv',train_smp,delimiter=',',fmt="%s")
 np.savetxt('txt_labels.csv',txt_labels,delimiter=',',fmt="%s")
