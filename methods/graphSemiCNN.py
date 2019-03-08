@@ -1,7 +1,7 @@
 import keras.layers.convolutional as conv
 import keras.layers.pooling as pool
 import keras.regularizers as reg
-from keras.layers import Input, Activation, Flatten, Dense, Concatenate, Reshape
+from keras.layers import Input, Dropout, Activation, Flatten, Dense, Concatenate, Reshape
 from keras.layers.merge import Dot
 from keras.models import Model
 from keras.optimizers import SGD # stochastic gradient descent
@@ -12,7 +12,9 @@ Semi-supervised learning with convolution neural network
 class GraphSemiCNN: 
     def build(self, nb_genes, nb_classes):
         # params
-        # dropout = 0.75 # prevent overfitting
+        dropout_f = 0.25 # prevent overfitting
+        dropout_c = 0.25
+        dropout_d = 0.25
 
         # feature extration
         nb_filters = 1000
@@ -22,10 +24,10 @@ class GraphSemiCNN:
         pool_size = 11 # window size for features
         
         # hidden layers
-        units1 = 11000 # number of nodes in hidden layer
-        units2 = 5500
-        units3 = 5500
-        units4 = 5500
+        units1 = 300 # number of nodes in hidden layer
+        units2 = 150
+        units3 = 120
+        units4 = 100
 
         # compilation
         INIT_LR = 0.01 # initial learning rate
@@ -35,6 +37,7 @@ class GraphSemiCNN:
         input1 = Input(shape=(nb_genes, 1))
         feature1 = conv.Conv1D(nb_filters, kernel_size, padding='same', kernel_initializer='he_normal', 
                 kernel_regularizer=reg.l1(L1CNN))(input1)
+        feature1 = Dropout(dropout_f)(feature1)
         feature1 = Activation(actfun)(feature1)
         feature1 = pool.MaxPooling1D(pool_size)(feature1)
         feature1 = Flatten()(feature1)
@@ -42,6 +45,7 @@ class GraphSemiCNN:
         input2 = Input(shape=(nb_genes, 1))
         feature2 = conv.Conv1D(nb_filters, kernel_size, padding='same', kernel_initializer='he_normal', 
                 kernel_regularizer=reg.l1(L1CNN))(input2)
+        feature2 = Dropout(dropout_f)(feature2)
         feature2 = Activation(actfun)(feature2)
         feature2 = pool.MaxPooling1D(pool_size)(feature2)
         feature2 = Flatten()(feature2)
@@ -53,10 +57,12 @@ class GraphSemiCNN:
         hidden2 = Dense(units2, activation='relu')(hidden1_1) # z1 -> z2
         hidden4 = Dense(units4, activation='relu')(target) # z3 -> z4
         concatenated = Concatenate(axis=0)([hidden2, hidden4]) # concatenate z2, z4
+        concatenated = Dropout(dropout_c)
 
         similarity = Dot(axes=1, normalize=True)([target, context]) # setup for the validation model
         dot_product = Dot(axes=1)([target, context])
         dot_product = Reshape((1,))(dot_product)
+        dot_product = Dropout(dropout_d)
         
         output1 = Dense(nb_classes, activation='softmax', name='output1')(concatenated)
         output2 = Dense(1, activation='sigmoid', name='output2')(dot_product) # softmax?
