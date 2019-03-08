@@ -13,15 +13,38 @@ class HistoryCallback(keras.callbacks.Callback):
 
 
 
-def similarity_callback(valid_inp, valid_out, inp_smp, out_smp, valid_size=10, top=10, random_seed=38):
+def similarity_callback(val, dat, val_model, valid_size=10, top=10, random_seed=38):
+    """
+            val: validatation datasets, indluding sample names, expression data, and labels
+            dat: sampled datasets from original input data, including sample names, expression data, and labels
+     valid_size: sample size for similarity validation
+            top: number of nearest samples
+    random_seed: seed for random number generator
+    """
     np.random.seed(random_seed)
-    ind = np.random.randint(valid_inp.shape[0], size=valid_size)
+    ind = np.random.randint(len(val['smp']), size=valid_size)
     for i in range(valid_size):
-        sample = valid_inp[ind[i]] # sample name
-        label =  # label
-        
         sim = []
-        for j in range(trainX.shape[0]):
-            out = validation_model.predict_on_batch([trainX[valid_smp[i].item()], trainX[j]])
-            sim.append(out)
+        target = val['inp'][ind[i]]
+        for j in range(len(dat['smp'])):
+            context = dat['inp'][j]
+            out = val_model.predict_on_batch([target, context])
+            sim.append(out[1])
+
+        smp_name = val['smp'][ind[i]]
+        label = val['out'][ind[i]]
+        nearest = (-sim).argsort()[1:top + 1]
+        nst_smp_names = dat['smp'][nearest]
+        nst_labels = dat['out'][nearest]
+        log_str = 'Nearest to %s (%s): ' % (smp_name, label)
+        
+        for k in range(top):
+            log_str = log_str + '%s (%s)' % (nst_smp_names[k], nst_labels[k])
+        
+        print(log_str)
+
+
+
+
+
 

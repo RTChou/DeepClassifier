@@ -61,7 +61,6 @@ def main():
 
     # build and train the model
     print('[INFO] building and training the model...')
-    bar = progressbar.ProgressBar()
     nb_samples = inp['train'][0].shape[0]
     nb_genes = inp['train'][0].shape[1]
     model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)
@@ -74,13 +73,15 @@ def main():
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
     for e in range(nb_epochs):
-        for i in len(ind_list):
-            trainX = [inp['train'][0][ind_list[i]], inp['train'][1][ind_list[i]]]
-            trainY = [out['train'][0][ind_list[i]], out['train'][1][ind_list[i]]]
-            validX = [inp['valid'][0][ind_list[i]], inp['valid'][1][ind_list[i]]]
-            validY = [out['valid'][0][ind_list[i]], out['valid'][1][ind_list[i]]]
-        loss = model.train_on_batch(trainX, trainY)
-        val_loss = model.evaluate(validX, validY)
+        bar = progressbar.ProgressBar()
+        for i in bar(range(100)):
+            for j in len(ind_list):
+                trainX = [inp['train'][0][ind_list[j]], inp['train'][1][ind_list[j]]]
+                trainY = [out['train'][0][ind_list[j]], out['train'][1][ind_list[j]]]
+                validX = [inp['valid'][0][ind_list[j]], inp['valid'][1][ind_list[j]]]
+                validY = [out['valid'][0][ind_list[j]], out['valid'][1][ind_list[j]]]
+                loss = model.train_on_batch(trainX, trainY)
+                val_loss = model.evaluate(validX, validY)
 
     history['loss'] = loss
     history['val_loss'] = val_loss
