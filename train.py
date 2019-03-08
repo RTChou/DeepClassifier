@@ -60,13 +60,24 @@ def main():
 
     # build and train the model
     print('[INFO] building and training the model...')
+    nb_samples = inp['train'][0].shape[0]
     nb_genes = inp['train'][0].shape[1]
     model = GraphSemiCNN.build(nb_genes, nb_classes)
+    
+    # callbacks
     histories = HistoryCallback()
     similarities = SimilarityCallback()
-    
+   
+    history = {}
+    ind = np.arange(nb_samples)
+    ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
     for e in range(nb_epochs):
-        loss = model.train_on_batch(inp['train'], out['train'])
+        for i in len(ind_list):
+            loss = model.train_on_batch(inp['train'], out['train'])
+            val_loss = model.evaluate(inp['validate'], out['validate'])
+
+    history['loss'] = loss
+    history['val_loss'] = val_loss
 
     fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['validate'], out['validate']), 
             epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 

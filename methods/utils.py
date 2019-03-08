@@ -88,7 +88,7 @@ def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
 
 
 def plot_loss_acc(plot_path, nb_epochs, fit_history):
-    N = np.arrange(0, nb_epochs)
+    N = np.arange(0, nb_epochs)
     H = fit_history
     plt.style.use('ggplot')
     plt.figure()
