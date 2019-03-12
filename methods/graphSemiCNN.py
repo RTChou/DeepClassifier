@@ -57,12 +57,12 @@ class GraphSemiCNN:
         hidden2 = Dense(units2, activation='relu')(hidden1_1) # z1 -> z2
         hidden4 = Dense(units4, activation='relu')(target) # z3 -> z4
         concatenated = Concatenate(axis=1)([hidden2, hidden4]) # concatenate z2, z4
-        concatenated = Dropout(dropout_c)
+        concatenated = Dropout(dropout_c)(concatenated)
 
         similarity = Dot(axes=1, normalize=True)([target, context]) # setup for the validation model
         dot_product = Dot(axes=1)([target, context])
         dot_product = Reshape((1,))(dot_product)
-        dot_product = Dropout(dropout_d)
+        dot_product = Dropout(dropout_d)(dot_product)
         
         output1 = Dense(nb_classes, activation='softmax', name='output1')(concatenated)
         output2 = Dense(1, activation='sigmoid', name='output2')(dot_product) # softmax?
