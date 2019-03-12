@@ -5,6 +5,7 @@ import argparse
 from methods.utils import load_data, sample_training_set, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
+import numpy as np
 import progressbar
 from methods.callbacks import similarity_callback
 from sklearn.metrics import classification_report
@@ -30,6 +31,7 @@ def main():
     
     nb_neighbors = 2
     sample_size = 10000
+    seed = 42
     batch_size = 32
 
     # load data, shuffle the samples, and scale data
@@ -51,6 +53,7 @@ def main():
     print('[INFO] building and training the model...')
     nb_samples = trn['inp'][0].shape[0]
     nb_genes = trn['inp'][0].shape[1]
+    np.random.seed(seed)
     model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)
     
     history = {}
