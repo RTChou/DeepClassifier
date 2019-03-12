@@ -70,7 +70,7 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
     trn, val, tst = split_data([dat['smp'][input1_ind], dat['smp'][input2_ind]], 
             [dat['inp'][input1_ind], dat['inp'][input2_ind]], 
             [dat['out'][input1_ind], np.array(output2)], 
-            outputs, poriton, random_seed2)    
+            portion, random_seed2)    
     
     return trn, val, tst
 
