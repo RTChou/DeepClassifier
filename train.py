@@ -2,7 +2,7 @@ import matplotlib
 matplotlib.use('Agg')
 
 import argparse
-from methods.utils import load_data, sample_training_set, split_data, plot_loss_acc
+from methods.utils import load_data, sample_training_set, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 import progressbar

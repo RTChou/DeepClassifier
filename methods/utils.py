@@ -42,10 +42,10 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
     # construct graph
     print('[INFO] creating KNN graph from data...')
     flat_list = []
-    for i in range(dat['int'].shape[0]):
+    for i in range(dat['inp'].shape[0]):
         sample = []
-        for j in range(dat['int'].shape[1]):
-            sample.append(dat['int'][i,j].item())
+        for j in range(dat['inp'].shape[1]):
+            sample.append(dat['inp'][i,j].item())
         flat_list.append(sample)
     nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
     graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
