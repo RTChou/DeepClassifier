@@ -56,7 +56,7 @@ class GraphSemiCNN:
         context = Dense(units3, activation='relu')(hidden1_2)
         hidden2 = Dense(units2, activation='relu')(hidden1_1) # z1 -> z2
         hidden4 = Dense(units4, activation='relu')(target) # z3 -> z4
-        concatenated = Concatenate(axis=0)([hidden2, hidden4]) # concatenate z2, z4
+        concatenated = Concatenate(axis=1)([hidden2, hidden4]) # concatenate z2, z4
         concatenated = Dropout(dropout_c)
 
         similarity = Dot(axes=1, normalize=True)([target, context]) # setup for the validation model
