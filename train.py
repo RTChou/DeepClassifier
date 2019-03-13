@@ -63,7 +63,7 @@ def main():
     for e in range(nb_epochs):
         print('Epoch %s/%s' % (e, nb_epochs))
         bar = progressbar.ProgressBar()
-        for i in bar(range(100)):
+        for i in bar(range(nb_samples)):
             for j in len(ind_list):
                 trainX = [trn['inp'][0][ind_list[j]], trn['inp'][1][ind_list[j]]]
                 trainY = [trn['out'][0][ind_list[j]], trn['out'][1][ind_list[j]]]
@@ -71,7 +71,9 @@ def main():
                 validY = [val['out'][0][ind_list[j]], val['out'][1][ind_list[j]]]
                 loss = model.train_on_batch(trainX, trainY)
                 val_loss = model.evaluate(validX, validY)
-            
+        print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s' % 
+            (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
+        
         history_callback()
         similarity_callback(val, dat, val_model)
 
