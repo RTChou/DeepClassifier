@@ -9,6 +9,7 @@ import numpy as np
 import progressbar
 from methods.callbacks import similarity_callback, precision_recall_callback
 from sklearn.metrics import classification_report
+from sklearn.metrics import precision_recall_curve
 import pickle
 
 def main():
@@ -100,6 +101,11 @@ def main():
     # plot the training loss and accuracy
     plot_loss_acc(plot_path, nb_epochs, fit_history)
 
+    # plot the precision-recall curve
+    aucs = []
+    y_pred = model.predict(self.validation_data[0])
+    aucs.append(roc_auc_score(self.validation_data[1][0], y_pred[0]))
+    
     # save the model and label binarizer
     print('[INFO] serializing the model and label binarizer...')
     model.save(model_path)
