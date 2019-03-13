@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 import numpy as np
 import progressbar
-from methods.callbacks import similarity_callback
+from methods.callbacks import similarity_callback, precision_recall_callback
 from sklearn.metrics import classification_report
 import pickle
 
@@ -76,9 +76,8 @@ def main():
                 val_loss = model.evaluate(validX, validY)
         print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s' % 
             (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
-        
-        history_callback()
         similarity_callback(smp_val, dat, val_model)
+        history_callback()
 
     # loss = loss[0]
     # out1_acc = loss[2]
@@ -89,8 +88,8 @@ def main():
     history['loss'] = loss
     history['val_loss'] = val_loss
 
-    fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['valid'], out['valid']), 
-            epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
+    # fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['valid'], out['valid']), 
+    #         epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
 
     # evaluate the model
     print('[INFO] evaluating the model...')
