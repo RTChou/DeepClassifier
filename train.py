@@ -32,6 +32,7 @@ def main():
     nb_neighbors = 2
     sample_size = 10000
     seed = 42
+    valid_size = 10
     batch_size = 32
 
     # load data, shuffle the samples, and scale data
@@ -55,6 +56,8 @@ def main():
     nb_genes = trn['inp'][0].shape[1]
     np.random.seed(seed)
     model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)
+    ind = np.random.randint(len(val['smp']), size=valid_size)
+    smp_val = {'smp': val['smp'][0][ind], 'inp': val['inp'][0][ind], 'out': val['out'][0][ind]}
     
     history = {}
     ind = np.arange(nb_samples)
@@ -75,7 +78,7 @@ def main():
             (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
         
         history_callback()
-        similarity_callback(val, dat, val_model)
+        similarity_callback(smp_val, dat, val_model)
 
     # loss = loss[0]
     # out1_acc = loss[2]
