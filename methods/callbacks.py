@@ -1,4 +1,4 @@
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import precision_recall_curve
 import numpy as np
 
 def history_callback(model):

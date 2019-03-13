@@ -59,7 +59,9 @@ def main():
     history = {}
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
+    print('Train on %s samples, validate on %s samples' % (str(nb_samples, str(val['inp'][0].shape[0])))
     for e in range(nb_epochs):
+        print('Epoch %s/%s' % (e, nb_epochs))
         bar = progressbar.ProgressBar()
         for i in bar(range(100)):
             for j in len(ind_list):
@@ -69,13 +71,16 @@ def main():
                 validY = [val['out'][0][ind_list[j]], val['out'][1][ind_list[j]]]
                 loss = model.train_on_batch(trainX, trainY)
                 val_loss = model.evaluate(validX, validY)
-            history_callback()
-            similarity_callback(val, dat, val_model)
+            
+        history_callback()
+        similarity_callback(val, dat, val_model)
 
     # loss = loss[0]
-    # acc = loss[1]
+    # out1_acc = loss[2]
+    # out2_acc = loss[3]
     # val_loss = val_loss[0]
-    # val_acc = val_loss[1]
+    # val_out1_acc = val_loss[2]
+    # val_out2_acc = val_loss[3]
     history['loss'] = loss
     history['val_loss'] = val_loss
 
