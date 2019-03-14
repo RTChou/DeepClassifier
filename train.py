@@ -6,7 +6,6 @@ from methods.utils import load_data, sample_training_set, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 import numpy as np
-import sys
 import progressbar
 from methods.callbacks import similarity_callback
 from sklearn.metrics import classification_report
@@ -65,18 +64,15 @@ def main():
     history = {new_list: [] for new_list in ['loss', 'out1_acc', 'out2_acc', 'val_loss', 'val_out1_acc', 'val_out2_acc']}
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
-    stdout = sys.stdout
     print('Train on %s samples, validate on %s samples' % (nb_samples, val['inp'][0].shape[0]))
     with open(verbose_path, 'w') as f:
         for e in range(nb_epochs):
-            widgets = [' [Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
+            widgets = ['[Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
                     progressbar.Timer(), ' ',
                     progressbar.ETA(), ' ']
+            
             for b in progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets):
-                sys.stdout = f    
-                print('Epoch %s/%s' % (e + 1, nb_epochs))
-                sys.stdout = stdout
-                print('')
+                _ = f.write('Epoch %s/%s \n' % (e + 1, nb_epochs))
                 for i in range(len(ind_list)):
                     print('Step %s/%s' % (i + 1, len(ind_list)))
                     trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
@@ -84,13 +80,11 @@ def main():
                     validX = [val['inp'][0], val['inp'][1]]
                     validY = [val['out'][0], val['out'][1]]
                     loss = model.train_on_batch(trainX, trainY)
-                    val_loss = model.evaluate(validX, validY, batch_size=batch_size)
-                sys.stdout = f
-                print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s' % 
-                    (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
-                similarity_callback(smp_val, dat, val_model)
-                sys.stdout = stdout
-                print('')
+                val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
+            
+            _ = f.write('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
+                    (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))
+            _ = f.write(similarity_callback(smp_val, dat, val_model) + '\n')
 
             history['loss'].append(loss[0])
             history['out1_acc'].append(loss[2])

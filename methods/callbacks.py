@@ -7,6 +7,7 @@ def similarity_callback(smp_val, dat, val_model, top=10, random_seed=308):
             top: number of nearest samples
     random_seed: seed for random number generator
     """
+    log_str = ''
     for i in range(valid_size):
         sim = []
         target = smp_val['inp'][i]
@@ -25,7 +26,7 @@ def similarity_callback(smp_val, dat, val_model, top=10, random_seed=308):
         for k in range(top):
             log_str = log_str + '%s (%s)' % (nst_smp_names[k], nst_labels[k])
         
-        print(log_str)
+        log_str = log_str + '\n'
 
-    print('')
+    return log_str + '\n'
 
