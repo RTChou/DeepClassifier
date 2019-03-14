@@ -37,7 +37,6 @@ def main():
     batch_size = 32
 
     # load data, shuffle the samples, and scale data
-    print('[INFO] loading training data...')
     dat = load_data(exp_path, label_path)
 
     # construct the KNN graph, sample context distribution, and split the data (60% trn; 20% val; 20% tst)

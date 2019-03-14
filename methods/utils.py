@@ -1,3 +1,4 @@
+import progressbar
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import scale
@@ -6,6 +7,7 @@ from .negativeSampling import NegativeSampling
 import matplotlib.pyplot as plt
 
 def load_data(exp_path, label_path, random_state=33):
+    print('[INFO] loading training data...')
     data = [] # training data
     labels = [] 
     
@@ -17,11 +19,13 @@ def load_data(exp_path, label_path, random_state=33):
     label_dst = label_dst.replace(np.nan, 'unlabeled', regex=True)    
     
     # store data in list
-    for i in range(exp_dst.shape[1]):
-       exp = list(exp_dst.iloc[:,i].values)
-       label = label_dst.loc[[exp_dst.columns[i]]]['tissue'].item()
-       data.append([[i] for i in exp])
-       labels.append([label])
+    bar = progressbar.ProgressBar()
+    for i in bar(range(100)):
+        for j in range(exp_dst.shape[1]):
+            exp = list(exp_dst.iloc[:,j].values)
+            label = label_dst.loc[[exp_dst.columns[j]]]['tissue'].item()
+            data.append([[j] for j in exp])
+            labels.append([label])
    
     samples = exp_dst.columns
     data = np.array(data)
@@ -42,13 +46,15 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
     # construct graph
     print('[INFO] creating KNN graph from data...')
     flat_list = []
-    for i in range(dat['inp'].shape[0]):
-        sample = []
-        for j in range(dat['inp'].shape[1]):
-            sample.append(dat['inp'][i,j].item())
-        flat_list.append(sample)
-    nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
-    graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
+    bar = progressbar.ProgressBar()
+    for i in bar(range(100)):
+        for j in range(dat['inp'].shape[0]):
+            sample = []
+            for k in range(dat['inp'].shape[1]):
+                sample.append(dat['inp'][j,k].item())
+            flat_list.append(sample)
+        nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
+        graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
 
     # sample context dist
     print('[INFO] sampling from graph and label context...')
@@ -59,11 +65,13 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
     ns = NegativeSampling()
     pair_sets = ns.get_label_pairs(dat['out'])
     
-    for i in range(sample_size):
-        sample = ns.sample_context_dist(graph, dat['out'], r1, r2, q, d, pair_sets)
-        input1_ind.append(sample[0])
-        input2_ind.append(sample[1])
-        output2.append(sample[2])
+    bar = progressbar.ProgressBar()
+    for i in bar(range(100)):
+        for j in range(sample_size):
+            sample = ns.sample_context_dist(graph, dat['out'], r1, r2, q, d, pair_sets)
+            input1_ind.append(sample[0])
+            input2_ind.append(sample[1])
+            output2.append(sample[2])
 
     # split data into training, validation, and test sets
     print('[INFO] splitting data into training, validation, and testing sets...')
