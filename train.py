@@ -62,7 +62,7 @@ def main():
     history = {new_list: [] for new_list in ['loss', 'out1_acc', 'out2_acc', 'val_loss', 'val_out1_acc', 'val_out2_acc']}
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
-    print('Train on %s samples, validate on %s samples' % (str(nb_samples, str(val['inp'][0].shape[0])))
+    print('Train on %s samples, validate on %s samples' % (str(nb_samples), str(val['inp'][0].shape[0])))
     for e in range(nb_epochs):
         print('Epoch %s/%s' % (e, nb_epochs))
         bar = progressbar.ProgressBar()
