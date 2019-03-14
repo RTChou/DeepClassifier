@@ -73,6 +73,8 @@ def main():
             
             for b in progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets):
                 _ = f.write('Epoch %s/%s \n' % (e + 1, nb_epochs))
+                print('')
+                
                 for i in range(len(ind_list)):
                     print('Step %s/%s' % (i + 1, len(ind_list)))
                     trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
@@ -80,6 +82,7 @@ def main():
                     validX = [val['inp'][0], val['inp'][1]]
                     validY = [val['out'][0], val['out'][1]]
                     loss = model.train_on_batch(trainX, trainY)
+                
                 val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
             
             _ = f.write('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
