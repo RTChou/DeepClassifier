@@ -74,7 +74,7 @@ def main():
             validX = [val['inp'][0], val['inp'][1]]
             validY = [val['out'][0], val['out'][1]]
             loss = model.train_on_batch(trainX, trainY)
-        val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
+        val_loss = model.evaluate(validX, validY, batch_size=batch_size, verbose=0)
         print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
                 (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))
         print(similarity_callback(smp_val, dat, val_model) + '\n')
