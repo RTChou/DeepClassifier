@@ -67,7 +67,7 @@ def main():
         widgets = ['[Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
                 progressbar.Timer(), ' ',
                 progressbar.ETA(), ' '] 
-        for i in  progressbar.progressbar(range(len(ind_list)), redirect_stdout=True, widgets=widgets):
+        for i in progressbar.progressbar(range(len(ind_list)), redirect_stdout=True, widgets=widgets):
             print('Step %s/%s' % (i + 1, len(ind_list)))
             trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
             trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]

@@ -17,14 +17,14 @@ class GraphSemiCNN:
         dropout_d = 0.25
 
         # feature extration
-        nb_filters = 1000
+        nb_filters = 500
         kernel_size = 10
         L1CNN = 0
         actfun = 'relu'
         pool_size = 11 # window size for features
         
         # hidden layers
-        units1 = 300 # number of nodes in hidden layer
+        units1 = 200 # number of nodes in hidden layer
         units2 = 150
         units3 = 120
         units4 = 100
