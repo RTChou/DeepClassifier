@@ -34,7 +34,7 @@ def main():
     sample_size = 10000
     seed = 42
     valid_size = 10
-    batch_size = 32
+    batch_size = 1000
 
     # load data, shuffle the samples, and scale data
     dat = load_data(exp_path, label_path)
@@ -68,11 +68,11 @@ def main():
                 progressbar.Timer(), ' ',
                 progressbar.ETA(), ' '] 
         for i in progressbar.progressbar(range(len(ind_list)), redirect_stdout=True, widgets=widgets):
-            print('Step %s/%s' % (i + 1, len(ind_list)))
             trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
             trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
             validX = [val['inp'][0], val['inp'][1]]
             validY = [val['out'][0], val['out'][1]]
+            print('Step %s/%s' % (i + 1, len(ind_list)))
             loss = model.train_on_batch(trainX, trainY)
         val_loss = model.evaluate(validX, validY, batch_size=batch_size, verbose=0)
         print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
