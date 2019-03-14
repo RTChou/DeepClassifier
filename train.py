@@ -77,7 +77,7 @@ def main():
         print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s' % 
             (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
         similarity_callback(smp_val, dat, val_model)
-
+    
         history['loss'].append(loss[0])
         history['out1_acc'].append(loss[2])
         history['out2_acc'].append(loss[3])
