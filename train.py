@@ -66,16 +66,16 @@ def main():
     for e in range(nb_epochs):
         widgets = ['[Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
                 progressbar.Timer(), ' ',
-                progressbar.ETA(), ' ']       
-        for b in progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets):
-            for i in range(len(ind_list)):
-                print('Step %s/%s' % (i + 1, len(ind_list)))
-                trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
-                trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
-                validX = [val['inp'][0], val['inp'][1]]
-                validY = [val['out'][0], val['out'][1]]
-                loss = model.train_on_batch(trainX, trainY)
-            val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
+                progressbar.ETA(), ' '] 
+        pbar = Progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets)
+        for i in pbar(range(len(ind_list))):
+            print('Step %s/%s' % (i + 1, len(ind_list)))
+            trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
+            trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
+            validX = [val['inp'][0], val['inp'][1]]
+            validY = [val['out'][0], val['out'][1]]
+            loss = model.train_on_batch(trainX, trainY)
+        val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
         
         print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
                 (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))
