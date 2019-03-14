@@ -70,7 +70,8 @@ def main():
     with open(verbose_path, 'w') as f:
         for e in range(nb_epochs):
             widgets = [' [Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
-                    progressbar.Timer(), ' ']
+                    progressbar.Timer(), ' ',
+                    progressbar.ETA(), ' ']
             for b in progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets):
                 sys.stdout = f    
                 print('Epoch %s/%s' % (e + 1, nb_epochs))
