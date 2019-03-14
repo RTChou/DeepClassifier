@@ -67,7 +67,7 @@ def main():
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
     stdout = sys.stdout
     print('Train on %s samples, validate on %s samples' % (nb_samples, val['inp'][0].shape[0]))
-    with open('verbose_path', 'w') as f:
+    with open(verbose_path, 'w') as f:
         for e in range(nb_epochs):
             widgets = [' [Epoch %s/%s] ' % (e,nb_epochs), progressbar.Bar(), ' ', 
                     progressbar.Timer(), ' ', 
