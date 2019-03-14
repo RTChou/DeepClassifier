@@ -28,5 +28,5 @@ def similarity_callback(smp_val, dat, val_model, top=10, random_seed=308):
         
         log_str = log_str + '\n'
 
-    return log_str + '\n'
+    return log_str
 

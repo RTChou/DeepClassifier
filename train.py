@@ -20,7 +20,6 @@ def main():
     parser.add_argument('-b', '--label_bin', required=True, help='path to output label binarizer')
     parser.add_argement('-p', '--plot', required=True, help='path to output accuracy/loss plot')
     parser.add_argement('-c', '--epochs', default=75, type=int, help='number of epochs to train for')
-    parser.add_argement('-v', '--verbose', default='./verbose.txt', help='path to verbose output')
     args = parser.parse_args()
 
     # params
@@ -30,7 +29,6 @@ def main():
     label_bin_path = args.label_bin
     plot_path = args.plot
     nb_epochs = args.epochs
-    verbose_path = args.verbose
     
     nb_neighbors = 2
     sample_size = 10000
@@ -65,38 +63,30 @@ def main():
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
     print('Train on %s samples, validate on %s samples' % (nb_samples, val['inp'][0].shape[0]))
-    with open(verbose_path, 'w') as f:
-        for e in range(nb_epochs):
-            widgets = ['[Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
-                    progressbar.Timer(), ' ',
-                    progressbar.ETA(), ' ']
-            
-            for b in progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets):
-                _ = f.write('Epoch %s/%s \n' % (e + 1, nb_epochs))
-                print('')
-                
-                for i in range(len(ind_list)):
-                    print('Step %s/%s' % (i + 1, len(ind_list)))
-                    trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
-                    trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
-                    validX = [val['inp'][0], val['inp'][1]]
-                    validY = [val['out'][0], val['out'][1]]
-                    loss = model.train_on_batch(trainX, trainY)
-                
-                val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
-            
-            _ = f.write('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
-                    (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))
-            _ = f.write(similarity_callback(smp_val, dat, val_model) + '\n')
+    for e in range(nb_epochs):
+        widgets = ['[Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
+                progressbar.Timer(), ' ',
+                progressbar.ETA(), ' ']       
+        for b in progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets):
+            for i in range(len(ind_list)):
+                print('Step %s/%s' % (i + 1, len(ind_list)))
+                trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
+                trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
+                validX = [val['inp'][0], val['inp'][1]]
+                validY = [val['out'][0], val['out'][1]]
+                loss = model.train_on_batch(trainX, trainY)
+            val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
+        
+        print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
+                (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))
+        print(similarity_callback(smp_val, dat, val_model) + '\n')
 
-            history['loss'].append(loss[0])
-            history['out1_acc'].append(loss[2])
-            history['out2_acc'].append(loss[3])
-            history['val_loss'].append(val_loss[0])
-            history['val_out1_acc'].append(val_loss[2])
-            history['val_out2_acc'].append(val_loss[3])
-
-        f.close()
+        history['loss'].append(loss[0])
+        history['out1_acc'].append(loss[2])
+        history['out2_acc'].append(loss[3])
+        history['val_loss'].append(val_loss[0])
+        history['val_out1_acc'].append(val_loss[2])
+        history['val_out2_acc'].append(val_loss[3])
 
     # fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['valid'], out['valid']), 
     #         epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
