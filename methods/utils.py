@@ -100,15 +100,16 @@ def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
     return trn, val, tst
 
 
-def plot_loss_acc(plot_path, nb_epochs, fit_history):
+def plot_loss_acc(plot_path, nb_epochs, history):
     N = np.arange(0, nb_epochs)
-    H = fit_history
     plt.style.use('ggplot')
     plt.figure()
-    plt.plot(N, H.history['loss'], label='train_loss')
-    plt.plot(N, H.history['val_loss'], label='val_loss')
-    plt.plot(N, H.history['acc'], label='train_acc')
-    plt.plot(N, H.history['val_acc'], label='val_acc')
+    plt.plot(N, history['loss'], label='train_loss')
+    plt.plot(N, history['out1_acc'], label='train_out1_acc')
+    plt.plot(N, history['out2_acc'], label='train_out2_acc')
+    plt.plot(N, history['val_loss'], label='val_loss')
+    plt.plot(N, history['val_out1_acc'], label='val_out1_acc')
+    plt.plot(N, history['val_out2_acc'], label='val_out2_acc')
     plt.title('Training Loss and Accuracy (Semi-supervised NN)')
     plt.xlabel('Number of Epochs')
     plt.ylabel('Loss/Accuracy')
