@@ -97,7 +97,7 @@ def main():
             history['val_out1_acc'].append(val_loss[2])
             history['val_out2_acc'].append(val_loss[3])
 
-    f.close()
+        f.close()
 
     # fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['valid'], out['valid']), 
     #         epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
