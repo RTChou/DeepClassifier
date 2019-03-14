@@ -67,8 +67,7 @@ def main():
         widgets = ['[Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
                 progressbar.Timer(), ' ',
                 progressbar.ETA(), ' '] 
-        pbar = progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets)
-        for i in pbar(range(len(ind_list))):
+        for i in  progressbar.progressbar(range(len(ind_list)), redirect_stdout=True, widgets=widgets):
             print('Step %s/%s' % (i + 1, len(ind_list)))
             trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
             trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
@@ -76,11 +75,9 @@ def main():
             validY = [val['out'][0], val['out'][1]]
             loss = model.train_on_batch(trainX, trainY)
         val_loss = model.evaluate(validX, validY, batch_size=batch_sizei, verbose=0)
-        
         print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
                 (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))
         print(similarity_callback(smp_val, dat, val_model) + '\n')
-
         history['loss'].append(loss[0])
         history['out1_acc'].append(loss[2])
         history['out2_acc'].append(loss[3])
