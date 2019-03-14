@@ -6,7 +6,7 @@ from methods.utils import load_data, sample_training_set, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 import numpy as np
-import progressbar
+import sys
 from methods.callbacks import similarity_callback
 from sklearn.metrics import classification_report
 from sklearn.metrics import precision_recall_curve
@@ -20,6 +20,7 @@ def main():
     parser.add_argument('-b', '--label_bin', required=True, help='path to output label binarizer')
     parser.add_argement('-p', '--plot', required=True, help='path to output accuracy/loss plot')
     parser.add_argement('-c', '--epochs', default=75, type=int, help='number of epochs to train for')
+    parser.add_argement('-v', '--verbose', default='./verbose.txt', help='path to verbose output')
     args = parser.parse_args()
 
     # params
@@ -29,6 +30,7 @@ def main():
     label_bin_path = args.label_bin
     plot_path = args.plot
     nb_epochs = args.epochs
+    verbose_path = args.verbose
     
     nb_neighbors = 2
     sample_size = 10000
@@ -62,28 +64,33 @@ def main():
     history = {new_list: [] for new_list in ['loss', 'out1_acc', 'out2_acc', 'val_loss', 'val_out1_acc', 'val_out2_acc']}
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
+    stdout = sys.stdout
     print('Train on %s samples, validate on %s samples' % (str(nb_samples), str(val['inp'][0].shape[0])))
-    for e in range(nb_epochs):
-        print('Epoch %s/%s' % (e, nb_epochs))
-        bar = progressbar.ProgressBar()
-        for i in bar(range(nb_samples)):
-            for j in range(len(ind_list)):
-                trainX = [trn['inp'][0][ind_list[j]], trn['inp'][1][ind_list[j]]]
-                trainY = [trn['out'][0][ind_list[j]], trn['out'][1][ind_list[j]]]
-                validX = [val['inp'][0][ind_list[j]], val['inp'][1][ind_list[j]]]
-                validY = [val['out'][0][ind_list[j]], val['out'][1][ind_list[j]]]
+    with open('verbose_path', 'w') as f:
+        for e in range(nb_epochs):
+            print('Epoch %s/%s' % (e, nb_epochs))
+            sys.stdout = f    
+            print('Epoch %s/%s' % (e, nb_epochs))
+            sys.stdout = stdout
+            for i in range(len(ind_list)):
+                trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
+                trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
+                validX = [val['inp'][0][ind_list[i]], val['inp'][1][ind_list[i]]]
+                validY = [val['out'][0][ind_list[i]], val['out'][1][ind_list[i]]]
                 loss = model.train_on_batch(trainX, trainY)
                 val_loss = model.evaluate(validX, validY)
-        print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s' % 
-            (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
-        similarity_callback(smp_val, dat, val_model)
-    
-        history['loss'].append(loss[0])
-        history['out1_acc'].append(loss[2])
-        history['out2_acc'].append(loss[3])
-        history['val_loss'].append(val_loss[0])
-        history['val_out1_acc'].append(val_loss[2])
-        history['val_out2_acc'].append(val_loss[3])
+            sys.stdout = f
+            print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s' % 
+                (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
+            similarity_callback(smp_val, dat, val_model)
+            sys.stdout = stdout
+
+            history['loss'].append(loss[0])
+            history['out1_acc'].append(loss[2])
+            history['out2_acc'].append(loss[3])
+            history['val_loss'].append(val_loss[0])
+            history['val_out1_acc'].append(val_loss[2])
+            history['val_out2_acc'].append(val_loss[3])
 
     # fit_history = model.fit(inp['train'], out['train'], validation_data=(inp['valid'], out['valid']), 
     #         epochs=nb_epochs, batch_size=batch_size, callbacks=[histories, similarities]) 
