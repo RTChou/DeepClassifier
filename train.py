@@ -65,7 +65,7 @@ def main():
     ind = np.arange(nb_samples)
     ind_list = [ind[i * batch_size:(i + 1) * batch_size] for i in range((len(ind) + batch_size - 1) // batch_size)]
     stdout = sys.stdout
-    print('Train on %s samples, validate on %s samples' % (str(nb_samples), str(val['inp'][0].shape[0])))
+    print('Train on %s samples, validate on %s samples' % (nb_samples, val['inp'][0].shape[0]))
     with open('verbose_path', 'w') as f:
         for e in range(nb_epochs):
             print('Epoch %s/%s' % (e, nb_epochs))
@@ -73,6 +73,7 @@ def main():
             print('Epoch %s/%s' % (e, nb_epochs))
             sys.stdout = stdout
             for i in range(len(ind_list)):
+                print('Step %s/%s' % (i, len(ind_list)))
                 trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
                 trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
                 validX = [val['inp'][0][ind_list[i]], val['inp'][1][ind_list[i]]]
