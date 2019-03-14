@@ -67,7 +67,7 @@ def main():
         print('Epoch %s/%s' % (e, nb_epochs))
         bar = progressbar.ProgressBar()
         for i in bar(range(nb_samples)):
-            for j in len(ind_list):
+            for j in range(len(ind_list)):
                 trainX = [trn['inp'][0][ind_list[j]], trn['inp'][1][ind_list[j]]]
                 trainY = [trn['out'][0][ind_list[j]], trn['out'][1][ind_list[j]]]
                 validX = [val['inp'][0][ind_list[j]], val['inp'][1][ind_list[j]]]
