@@ -69,14 +69,15 @@ def main():
     print('Train on %s samples, validate on %s samples' % (nb_samples, val['inp'][0].shape[0]))
     with open(verbose_path, 'w') as f:
         for e in range(nb_epochs):
-            widgets = [' [Epoch %s/%s] ' % (e,nb_epochs), progressbar.Bar(), ' ', 
+            widgets = [' [Epoch %s/%s] ' % (e + 1,nb_epochs), progressbar.Bar(), ' ', 
                     progressbar.Timer(), ' ']
             for b in progressbar.progressbar(range(nb_samples), redirect_stdout=True, widgets=widgets):
                 sys.stdout = f    
-                print('Epoch %s/%s' % (e, nb_epochs))
+                print('Epoch %s/%s' % (e + 1, nb_epochs))
                 sys.stdout = stdout
+                print('')
                 for i in range(len(ind_list)):
-                    print('Step %s/%s' % (i, len(ind_list)))
+                    print('Step %s/%s' % (i + 1, len(ind_list)))
                     trainX = [trn['inp'][0][ind_list[i]], trn['inp'][1][ind_list[i]]]
                     trainY = [trn['out'][0][ind_list[i]], trn['out'][1][ind_list[i]]]
                     validX = [val['inp'][0], val['inp'][1]]
@@ -88,6 +89,7 @@ def main():
                     (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))    
                 similarity_callback(smp_val, dat, val_model)
                 sys.stdout = stdout
+                print('')
 
             history['loss'].append(loss[0])
             history['out1_acc'].append(loss[2])
