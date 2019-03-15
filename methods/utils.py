@@ -52,8 +52,8 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
         flat_list.append(sample)
     nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
     # graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray() # note: will provide a progress bar for this
-    time_factor = np.log2(14000) / np.log2 (len(flat_list))
-    graph = provide_progress_bar(nbrs.kneighbors_graph, estimated_time=3600 / time_factor, tstep=time_factor / 3600, 
+    time = np.log2(14000) / np.log2 (len(flat_list)) * 3600
+    graph = provide_progress_bar(nbrs.kneighbors_graph, max_value=len(flat_list), tstep=time / len(flat_list), 
             args=(flat_list,), kwargs={'mode': 'distance'})
 
     # sample context dist
@@ -154,13 +154,13 @@ def plot_loss_acc(plot_path, nb_epochs, history):
     plt.savefig(plot_path)
 
 
-def provide_progress_bar(function, estimated_time, tstep=0.2, args=[], kwargs={}):
+def provide_progress_bar(function, max_value, tstep, args=[], kwargs={}):
     ret = []
     def myrunner(function, ret, *args, **kwargs):
         ret[0] = function(*args, **kwargs)
 
     thread = threading.Thread(target=myrunner, args=(function, ret) + tuple(args), kwargs=kwargs)
-    pbar = progressbar.ProgressBar(max_value=estimated_time)
+    pbar = progressbar.ProgressBar(max_value=max_value)
 
     thread.start()
     while thread.is_alive():
