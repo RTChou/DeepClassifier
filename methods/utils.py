@@ -52,7 +52,7 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
         flat_list.append(sample)
     nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
     # graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray() # note: will provide a progress bar for this
-    time = np.log2(14000) / np.log2 (len(flat_list)) * 3600
+    time = np.log2(14000) / np.log2 (len(flat_list)) * 1800
     graph = provide_progress_bar(nbrs.kneighbors_graph, max_value=len(flat_list), tstep=time / len(flat_list), 
             args=(flat_list,), kwargs={'mode': 'distance'})
 
