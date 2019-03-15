@@ -132,7 +132,7 @@ def similarity_callback(smp_val, dat, val_model, top=10, random_seed=308):
         for k in range(top):
             log_str = log_str + '%s (%s)' % (nst_smp_names[k], nst_labels[k])
 
-        log_str = log_str + '\n'
+        log_str += '\n'
 
     return log_str
 
@@ -163,9 +163,11 @@ def provide_progress_bar(function, max_value, tstep, args=[], kwargs={}):
     pbar = progressbar.ProgressBar(max_value=max_value)
 
     thread.start()
+    i = 1
     while thread.is_alive():
         thread.join(timeout=tstep)
-        pbar.update(tstep)
+        pbar.update(i)
+        i += 1
     
     return ret[0]
 
