@@ -2,12 +2,11 @@ import matplotlib
 matplotlib.use('Agg')
 
 import argparse
-from methods.utils import load_data, sample_training_set, plot_loss_acc
+from methods.utils import load_data, sample_training_set, similarity_callback, plot_loss_acc
 from sklearn.preprocessing import LabelBinarizer
 from methods.graphSemiCNN import GraphSemiCNN
 import numpy as np
 import progressbar
-from methods.callbacks import similarity_callback
 from sklearn.metrics import classification_report
 from sklearn.metrics import precision_recall_curve
 import pickle
