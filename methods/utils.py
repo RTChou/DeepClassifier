@@ -5,6 +5,7 @@ from sklearn.preprocessing import scale
 from sklearn.neighbors import NearestNeighbors
 from .negativeSampling import NegativeSampling
 import matplotlib.pyplot as plt
+import threading
 
 def load_data(exp_path, label_path, random_state=33):
     print('[INFO] loading training data...')
@@ -50,7 +51,9 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
             sample.append(dat['inp'][i, j].item())
         flat_list.append(sample)
     nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
-    graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray() # note: will provide a progress bar for this
+    # graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray() # note: will provide a progress bar for this
+    graph = provide_progress_bar(nbrs.kneighbors_graph, estimated_time=30 * 60, tstep=1 / (30 * 60), 
+            args=flat_list, kwargs={'mode': 'distance'})
 
     # sample context dist
     print('[INFO] sampling from graph and label context...')
@@ -148,5 +151,21 @@ def plot_loss_acc(plot_path, nb_epochs, history):
     plt.ylabel('Loss/Accuracy')
     plt.legend()
     plt.savefig(plot_path)
+
+
+def provide_progress_bar(function, estimated_time, tstep=0.2, args=[], kwargs={}):
+    ret = []
+    def myrunner(function, ret, *args, **kwargs):
+        ret[0] = function(*args, **kwargs)
+
+    thread = threading.Thread(target=myrunner, args=(function, ret) + tuple(args), kwargs=kwargs)
+    pbar = progressbar.ProgressBar(max_value=estimated_time)
+
+    thread.start()
+    while thread.is_alive():
+        thread.join(timeout=tstep)
+        pbar.update(tstep)
+    
+    return ret[0]
 
 
