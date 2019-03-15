@@ -50,7 +50,7 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
             sample.append(dat['inp'][i, j].item())
         flat_list.append(sample)
     nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
-    graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray()
+    graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray() # note: will provide a progress bar for this
 
     # sample context dist
     print('[INFO] sampling from graph and label context...')
