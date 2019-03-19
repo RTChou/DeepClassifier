@@ -155,7 +155,7 @@ def plot_loss_acc(plot_path, nb_epochs, history):
 
 
 def provide_progress_bar(function, max_value, tstep, args=[], kwargs={}):
-    ret = []
+    ret = [None]
     def myrunner(function, ret, *args, **kwargs):
         ret[0] = function(*args, **kwargs)
 
@@ -168,7 +168,8 @@ def provide_progress_bar(function, max_value, tstep, args=[], kwargs={}):
         thread.join(timeout=tstep)
         pbar.update(i)
         i += 1
-    
+    pbar.finish()
+
     return ret[0]
 
 
