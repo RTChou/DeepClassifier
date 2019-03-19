@@ -169,6 +169,7 @@ def provide_progress_bar(function, max_value, tstep, args=[], kwargs={}):
         if i < max_value
             pbar.update(i)
             i += 1
+
     pbar.finish()
 
     return ret[0]
