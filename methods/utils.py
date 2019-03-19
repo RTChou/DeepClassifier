@@ -166,10 +166,9 @@ def provide_progress_bar(function, max_value, tstep, args=[], kwargs={}):
     i = 0
     while thread.is_alive():
         thread.join(timeout=tstep)
-        if i < max_value
+        if i < max_value:
             pbar.update(i)
             i += 1
-
     pbar.finish()
 
     return ret[0]
