@@ -2,7 +2,7 @@ import progressbar
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import scale
-from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import BallTree, kneighbors_graph
 from .negativeSampling import NegativeSampling
 import matplotlib.pyplot as plt
 import threading
@@ -50,11 +50,11 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
         for j in range(dat['inp'].shape[1]):
             sample.append(dat['inp'][i, j].item())
         flat_list.append(sample)
-    nbrs = NearestNeighbors(nb_neighbors, algorithm='ball_tree').fit(flat_list)
-    # graph = nbrs.kneighbors_graph(flat_list, mode='distance').toarray() # note: will provide a progress bar for this
+    tree = BallTree(flat_list)
+    # graph = kneighbors_graph(tree, mode='distance', njobs=-1).toarray()
     time = np.log2(14000) / np.log2 (len(flat_list)) * 1800
-    graph = knn_progress_bar(nbrs.kneighbors_graph, max_value=len(flat_list), tstep=time / len(flat_list), 
-            kwargs={'X': flat_list, 'mode': 'distance'})
+    graph = knn_progress_bar(kneighbors_graph, max_value=len(flat_list), tstep=time / len(flat_list), 
+            kwargs={'X': tree, 'mode': 'distance', 'n_jobs': -1})
 
     # sample context dist
     print('[INFO] sampling from graph and label context...')
