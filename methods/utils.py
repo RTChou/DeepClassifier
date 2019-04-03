@@ -52,9 +52,11 @@ def sample_training_set(dat, sample_size, nb_neighbors=2, random_seed1=123, r1=0
         flat_list.append(sample)
     tree = BallTree(flat_list)
     # graph = kneighbors_graph(tree, mode='distance', njobs=-1).toarray()
-    time = np.log2(14000) / np.log2 (len(flat_list)) * 1800
-    graph = knn_progress_bar(kneighbors_graph, max_value=len(flat_list), tstep=time / len(flat_list), 
-            kwargs={'X': tree, 'n_neighbors':nb_neighbors, 'mode': 'distance'})
+    time = np.log2(14000) / np.log2 (len(flat_list)) * 30
+    print('Please wait. This will take about %s minutes...' % time)
+    graph = kneighbors_graph(tree, nb_neighbors, mode='distance')
+    # graph = knn_progress_bar(kneighbors_graph, max_value=len(flat_list), tstep=time / len(flat_list), 
+    #        kwargs={'X': tree, 'n_neighbors':nb_neighbors, 'mode': 'distance'})
 
     # sample context dist
     print('[INFO] sampling from graph and label context...')
