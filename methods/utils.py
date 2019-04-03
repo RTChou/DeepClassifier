@@ -5,7 +5,7 @@ from sklearn.preprocessing import scale
 from sklearn.neighbors import BallTree, kneighbors_graph
 from .negativeSampling import NegativeSampling
 import matplotlib.pyplot as plt
-import threading
+import multiprocessing
 
 def load_data(exp_path, label_path, random_state=33):
     print('[INFO] loading training data...')
@@ -159,13 +159,14 @@ def knn_progress_bar(function, max_value, tstep, args=[], kwargs={}):
     def myrunner(function, ret, *args, **kwargs):
         ret[0] = function(*args, **kwargs).toarray()
 
-    thread = threading.Thread(target=myrunner, args=(function, ret) + tuple(args), kwargs=kwargs)
+    process = multiprocessing.Process(target=myrunner, args=(function, ret) + tuple(args), kwargs=kwargs)
     pbar = progressbar.ProgressBar(max_value=max_value)
 
-    thread.start()
+    process.daemon = True
+    process.start()
     i = 0
-    while thread.is_alive():
-        thread.join(timeout=tstep)
+    while process.is_alive():
+        process.join(timeout=tstep)
         if i < max_value:
             pbar.update(i)
             i += 1
