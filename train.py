@@ -29,17 +29,17 @@ def main():
     plot_path = args.plot
     nb_epochs = args.epochs
     
-    nb_neighbors = 2
-    sample_size = 10000
-    seed = 42
-    valid_size = 10
-    batch_size = 64
+nb_neighbors = 2
+sample_size = 10000
+seed = 42
+valid_size = 10
+batch_size = 64
 
-    # load data, shuffle the samples, and scale data
-    dat = load_data(exp_path, label_path)
+# load data, shuffle the samples, and scale data
+dat = load_data(exp_path, label_path)
 
-    # construct the KNN graph, sample context distribution, and split the data (60% trn; 20% val; 20% tst)
-    trn, val, tst = sample_training_set(dat, sample_size)
+# construct the KNN graph, sample context distribution, and split the data (60% trn; 20% val; 20% tst)
+trn, val, tst = sample_training_set(dat, sample_size)
     
 # one-hot encoding
 lb = LabelBinarizer()
