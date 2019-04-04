@@ -19,8 +19,8 @@ def main():
     parser.add_argument('-l', '--label', required=True, help='path to input labels')
     parser.add_argument('-m', '--model', required=True, help='path to output trained model')
     parser.add_argument('-b', '--label_bin', required=True, help='path to output label binarizer')
-    parser.add_argement('-p', '--plot', required=True, help='path to output accuracy/loss plot')
-    parser.add_argement('-c', '--epochs', default=75, type=int, help='number of epochs to train for')
+    parser.add_argument('-p', '--plot', required=True, help='path to output accuracy/loss plot')
+    parser.add_argument('-c', '--epochs', default=75, type=int, help='number of epochs to train for')
     args = parser.parse_args()
 
     # params
