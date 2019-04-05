@@ -103,8 +103,9 @@ def split_data(smp_names, inputs, outputs, portion=[.6, .2], random_seed=33):
     return trn, val, tst
 
 
-def similarity_callback(smp_val, dat, val_model, top=10, random_seed=308):
+def similarity_callback(valid_size, smp_val, dat, val_model, top=10, random_seed=308):
     """
+     valid_size: validation sample size
         smp_val: validatation datasets from split_data()
             dat: original input data, including sample names, expression data, and labels
             top: number of nearest samples
