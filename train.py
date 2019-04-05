@@ -77,9 +77,8 @@ def main():
             loss = model.train_on_batch(trainX, trainY)
         # validate on batch
         val_loss = model.evaluate(validX, validY, batch_size=batch_size, verbose=0)
-        print('- loss: %s - out1_acc: %s - out2_acc: %s - val_loss: %s - val_out1_acc: %s - val_out2_acc: %s \n' % 
-                (round(loss[0], 4), round(loss[2], 4), round(loss[3], 4), 
-                 round(val_loss[0], 4), round(val_loss[2], 4), round(val_loss[3], 4)))
+        print('- loss: %s.4f - out1_acc: %s.4f - out2_acc: %s.4f - val_loss: %s.4f - val_out1_acc: %s.4f - val_out2_acc: %s.4f \n' % 
+                (loss[0], loss[2], loss[3], val_loss[0], val_loss[2], val_loss[3]))
         print(similarity_callback(valid_size, smp_val, dat, val_model) + '\n')
         history['loss'].append(loss[0])
         history['out1_acc'].append(loss[2])
