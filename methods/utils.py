@@ -114,11 +114,11 @@ def similarity_callback(valid_size, smp_val, dat, val_model, top=10, random_seed
     log_str = ''
     for i in range(valid_size):
         sim = []
-        target = smp_val['inp'][i]
+        target = [smp_val['inp'][i]]
         for j in range(len(dat['smp'])):
-            context = dat['inp'][j]
+            context = [dat['inp'][j]]
             out = val_model.predict_on_batch([target, context])
-            sim.append(out[1])
+            sim.append(out)
 
         nearest = (-sim).argsort()[1:top + 1]
         smp_name = smp_val['smp'][i]
