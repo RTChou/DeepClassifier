@@ -113,7 +113,7 @@ def similarity_callback(valid_size, smp_val, dat, val_model, top=10, random_seed
     """
     log_str = ''
     for i in range(valid_size):
-        sim = np.zeros((valid_size,))
+        sim = np.zeros((len(dat['smp']),))
         target = [smp_val['inp'][i]]
         for j in range(len(dat['smp'])):
             context = [dat['inp'][j]]
