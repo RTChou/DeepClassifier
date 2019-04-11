@@ -128,7 +128,7 @@ def similarity_callback(valid_size, smp_val, dat, val_model, top=10, random_seed
         log_str = log_str + 'Nearest to %s (%s): \n' % (smp_name, label)
 
         for k in range(top):
-            log_str = log_str + '%s (%s) \n' % (nst_smp_names[k], nst_labels[k].values())
+            log_str = log_str + '%s (%s) \n' % (nst_smp_names[k], nst_labels[k].values)
 
     return log_str
 
