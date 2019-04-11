@@ -47,6 +47,7 @@ def main():
     lb = LabelBinarizer()
     lb.fit(dat['out']) # labels
     trn['out'][0] = lb.transform(trn['out'][0])
+    val_label = val['out'][0]
     val['out'][0] = lb.transform(val['out'][0])
     tst['out'][0] = lb.transform(tst['out'][0])
     nb_classes = len(lb.classes_) # note: training classes vs data classes
@@ -59,7 +60,7 @@ def main():
     model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)    
     
     ind = np.random.randint(len(val['smp']), size=valid_size)
-    smp_val = {'smp': val['smp'][0][ind], 'inp': val['inp'][0][ind], 'out': val['out'][0][ind]}
+    smp_val = {'smp': val['smp'][0][ind], 'inp': val['inp'][0][ind], 'out': val_label[ind]}
     
     history = {new_list: [] for new_list in ['loss', 'out1_acc', 'out2_acc', 'val_loss', 'val_out1_acc', 'val_out2_acc']}
     ind = np.arange(nb_samples)
@@ -92,8 +93,8 @@ def main():
 
     # evaluate the model
     print('[INFO] evaluating the model...')
-    predictions = model.predict(inp['test'], batch_size=batch_size)
-    print(classification_report(out['test'][0].argmax(axis=1),
+    predictions = model.predict(tst['inp'], batch_size=batch_size)
+    print(classification_report(tst['out'][0].argmax(axis=1),
 	predictions[0].argmax(axis=1), target_names=lb.classes_))
 
     # plot the training loss and accuracy
