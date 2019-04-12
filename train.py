@@ -59,7 +59,7 @@ def main():
     np.random.seed(seed)
     model, val_model = GraphSemiCNN().build(nb_genes, nb_classes)    
     
-    ind = np.random.randint(len(val['smp']), size=valid_size)
+    ind = np.random.randint(len(val['smp'][0]), size=valid_size)
     smp_val = {'smp': val['smp'][0][ind], 'inp': val['inp'][0][ind], 'out': val_label[ind]}
     
     history = {new_list: [] for new_list in ['loss', 'out1_acc', 'out2_acc', 'val_loss', 'val_out1_acc', 'val_out2_acc']}
@@ -95,7 +95,7 @@ def main():
     print('[INFO] evaluating the model...')
     predictions = model.predict(tst['inp'], batch_size=batch_size)
     print(classification_report(tst['out'][0].argmax(axis=1),
-	predictions[0].argmax(axis=1), target_names=lb.classes_))
+	predictions[0].argmax(axis=1), labels=range(len(target_names)), target_names=lb.classes_))
 
     # plot the training loss and accuracy
     plot_loss_acc(plot_path, nb_epochs, history)
