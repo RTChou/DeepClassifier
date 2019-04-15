@@ -95,7 +95,7 @@ def main():
     print('[INFO] evaluating the model...')
     predictions = model.predict(tst['inp'], batch_size=batch_size)
     print(classification_report(tst['out'][0].argmax(axis=1),
-	predictions[0].argmax(axis=1), labels=range(len(target_names)), target_names=lb.classes_))
+	predictions[0].argmax(axis=1), labels=range(len(lb.classes_)), target_names=lb.classes_))
 
     # plot the training loss and accuracy
     plot_loss_acc(plot_path, nb_epochs, history)
