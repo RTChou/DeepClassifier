@@ -143,7 +143,7 @@ def plot_loss_acc(plot_path, nb_epochs, history):
     plt.plot(N, history['val_loss'], label='val_loss')
     plt.plot(N, history['val_out1_acc'], label='val_out1_acc')
     plt.plot(N, history['val_out2_acc'], label='val_out2_acc')
-    plt.title('Training Loss and Accuracy (Semi-supervised NN)')
+    plt.title('Training Loss and Accuracy (Semi-Supervised NN)')
     plt.xlabel('Number of Epochs')
     plt.ylabel('Loss/Accuracy')
     plt.legend()
