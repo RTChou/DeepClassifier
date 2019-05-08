@@ -65,10 +65,10 @@ class GraphSemiCNN:
         dot_product = Dropout(dropout_d)(dot_product)
         
         output1 = Dense(nb_classes, activation='softmax', name='output1')(concatenated)
-        output2 = Dense(1, activation='sigmoid', name='output2')(dot_product) # softmax?
+        output2 = Dense(1, activation='sigmoid', name='output2')(dot_product)
 
         model = Model(inputs=[input1, input2], outputs=[output1, output2], name='graphSemiCNN')
-        val_model = Model(inputs=[input1, input2], outputs=similarity)
+        val_model = Model(inputs=[input1, input2], outputs=similarity) # similarity callback
 
         # compile the model
         losses = {
