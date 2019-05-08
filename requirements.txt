@@ -1,0 +1,8 @@
+python=3.6
+keras >=2.2.4
+matplotlib
+numpy
+pandas
+progressbar2
+scikit-learn
+scipy
